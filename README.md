@@ -245,3 +245,34 @@ APPROVE/BLOCK decisions. Investigation remains advisory and read-only.
 
 All campaign data is synthetic. No production connectors, customer records,
 external APIs or campaign execution are included.
+
+## v3.1 — Governance OS
+
+V3.1 introduces a redesigned workspace with navigation for Executive
+Overview, Campaign QA, Campaign Portfolio, Risk Intelligence,
+Approval Centre, Audit Ledger and Policy Registry.
+
+### Human approval
+
+- Records reviewer identity, action, rationale and UTC timestamp.
+- Supports APPROVE, REJECT and REQUEST_CHANGES for eligible cases.
+- A deterministic BLOCK campaign cannot be approved or released.
+- Review records explicitly carry `release_authorized: false`.
+
+### Audit ledger
+
+- Assessment and human-review events are recorded locally.
+- Events are linked with SHA-256 hashes.
+- Chain verification detects accidental or partial record modification.
+- Appending is refused when an existing chain fails verification.
+
+### Important prototype limitations
+
+The local JSON files are not a production-grade immutable ledger.
+Hash chaining is tamper-evident, not tamper-proof against an administrator
+who can rewrite the entire file and recompute the chain. Local JSON storage
+does not provide multi-user transactions, authentication, authorization,
+or concurrent-write protection. Reviewer identity is self-asserted in
+this synthetic demonstration.
+
+No campaign execution or release integration is provided.
