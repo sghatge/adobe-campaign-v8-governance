@@ -1,0 +1,80 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1220"><title>Campaign Control Case Study | Governance OS</title><style>
+:root {
+  --bg:#0b1220; --panel:#121e31; --panel2:#18263b;
+  --text:#edf3ff; --muted:#a8b7cc; --blue:#62a5ff;
+  --green:#6ee7b7; --line:#2a3a52;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);
+font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.65}
+a{color:inherit;text-decoration:none}
+a:focus-visible{outline:3px solid var(--green);outline-offset:4px}
+.wrap{width:min(1120px,90%);margin:auto}
+nav{height:76px;border-bottom:1px solid var(--line);
+display:flex;align-items:center;justify-content:space-between}
+.brand{font-weight:800;letter-spacing:.4px}
+.brand span{color:var(--blue)}
+.navlinks{display:flex;gap:25px;color:var(--muted);font-size:14px}
+.hero{padding:100px 0 75px;max-width:850px}
+.eyebrow{color:var(--blue);font-weight:750;letter-spacing:2px;
+font-size:12px;text-transform:uppercase}
+h1{font-size:clamp(42px,7vw,72px);line-height:1.08;
+letter-spacing:-2px;margin:20px 0}
+h2{font-size:30px;line-height:1.2;margin:0 0 16px}
+h3{font-size:18px;margin:0 0 10px}
+.lead{font-size:19px;color:var(--muted);max-width:760px}
+.actions{display:flex;gap:13px;flex-wrap:wrap;margin-top:30px}
+.btn{display:inline-block;padding:12px 19px;border-radius:8px;
+font-weight:700;font-size:14px;border:1px solid var(--line)}
+.primary{background:#2868e8;border-color:#2868e8;color:white}
+.secondary{background:var(--panel)}
+.btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.section{padding:65px 0;border-top:1px solid var(--line)}
+.sub{color:var(--muted);max-width:760px;margin:0 0 28px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+.card{background:var(--panel);border:1px solid var(--line);
+border-radius:13px;padding:23px}
+.card p{color:var(--muted);font-size:14px;margin-bottom:0}
+.number{font-size:13px;color:var(--blue);font-weight:800;
+letter-spacing:1px;margin-bottom:16px}
+.architecture{display:grid;grid-template-columns:repeat(4,1fr);
+gap:10px;margin-top:25px}
+.step{background:var(--panel2);border:1px solid var(--line);
+border-radius:10px;padding:18px;text-align:center}
+.step strong{display:block;font-size:14px}
+.step small{color:var(--muted)}
+.pill{display:inline-block;border:1px solid #31517a;color:#9bc6ff;
+border-radius:30px;padding:5px 11px;font-size:12px;margin:4px 5px 4px 0}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+ul{padding-left:20px;color:var(--muted)}
+li{margin:8px 0}
+.callout{background:linear-gradient(120deg,#142b4a,#122239);
+border:1px solid #31517a;border-radius:15px;padding:28px}
+footer{padding:30px 0 45px;color:var(--muted);font-size:13px;
+border-top:1px solid var(--line)}
+@media(max-width:800px){
+ .grid{grid-template-columns:repeat(2,1fr)}
+ .architecture{grid-template-columns:repeat(2,1fr)}
+ .split{grid-template-columns:1fr}
+ .navlinks{gap:12px;font-size:12px}
+}
+@media(max-width:520px){
+ .grid{grid-template-columns:1fr}
+ .navlinks a:nth-child(2){display:none}
+ .hero{padding:70px 0 55px}
+ h1{letter-spacing:-1px}
+}
+
+pre{white-space:pre-wrap;background:#08101d;border:1px solid var(--line);border-radius:10px;padding:16px;color:#c7dcff;font-size:13px;overflow:auto}.scenario{margin:10px 0;padding:12px;border-left:3px solid var(--blue);background:var(--panel2);color:var(--muted)}
+</style></head><body><nav class="wrap"><a class="brand" href="index.html">GOVERNANCE <span>OS</span></a><div class="navlinks"><a href="index.html">Flagship</a><a href="architecture-guide.html">Start here</a><a href="portfolio.html">Project index</a></div></nav><main><header class="wrap hero"><div class="eyebrow">One-page engineering case study · synthetic scenarios</div><h1>Make campaign control decisions explainable.</h1><p class="lead">Governance OS is a reference implementation for turning campaign pre-flight requirements into explicit checks, a fail-closed decision, human review and inspectable evidence.</p><div class="actions"><a class="btn primary" href="https://adobe-campaign-v8-governance-3rzwjb2pbqqftpm3fecxzd.streamlit.app/">Open live demo ↗</a><a class="btn secondary" href="https://github.com/sghatge/adobe-campaign-v8-governance">Review source ↗</a></div></header><section class="section"><div class="wrap"><div class="eyebrow">Architecture</div><h2>Controls before approval</h2><p class="sub">The repository documents deterministic campaign checks; a mandatory FAIL or UNKNOWN yields BLOCK. The advisory investigation layer can explain evidence and recommend diagnostics, but it cannot override the gate. Human review records accountability and does not automatically release a blocked campaign.</p><figure class="card"><img src="governance-architecture.svg" alt="Governance OS architecture showing deterministic campaign checks, block outcome, advisory investigation and human review" style="display:block;width:100%;height:auto"><figcaption style="color:var(--muted);font-size:13px;margin-top:12px">Existing repository architecture diagram. <a href="governance-architecture.svg">Open SVG ↗</a></figcaption></figure></div></section><section class="section"><div class="wrap"><div class="eyebrow">Illustrative control scenarios</div><h2>Common failure modes translated into evidence checks</h2><p class="sub">These are synthetic examples, not reported incidents or claims of specific production integrations. They show how an operator might frame a check for evaluation.</p><div class="grid"><article class="card"><h3>Audience or targeting mismatch</h3><p class="scenario"><b>Scenario:</b> selected audience differs from the approved baseline or expected targeting criteria.</p><p><b>Control idea:</b> compare the submitted audience evidence with an explicit baseline; flag missing or out-of-policy evidence for BLOCK / review according to configured policy.</p></article><article class="card"><h3>Consent or suppression evidence missing</h3><p class="scenario"><b>Scenario:</b> the run package lacks current consent or suppression evidence.</p><p><b>Control idea:</b> treat required evidence as mandatory; missing/unknown status must not silently pass.</p></article><article class="card"><h3>Broken link or dynamic content proof</h3><p class="scenario"><b>Scenario:</b> a link, personalization rule, or rendered content proof has not been checked.</p><p><b>Control idea:</b> require a reviewer-confirmed proof or a documented validation artifact. The project README documents advisory content checks and explicit human proof approval; this page does not claim full link crawling or dynamic-content integration.</p></article><article class="card"><h3>Approval bypass or unclear ownership</h3><p class="scenario"><b>Scenario:</b> mandatory checks are incomplete or the decision lacks an accountable reviewer.</p><p><b>Control idea:</b> keep FAIL / UNKNOWN blocking, capture reviewer identity, action and rationale, and retain an audit event for later inspection.</p></article></div></div></section><section class="section"><div class="wrap"><div class="eyebrow">Sample decision shape</div><h2>Readable outcomes</h2><p class="sub">Illustrative display only. The live app evaluates its bundled examples and produces the authoritative result for each run.</p><div class="grid"><article class="card"><h3>APPROVE · synthetic passing example</h3><pre>decision: APPROVE
+mandatory_checks: PASS
+review:
+  action: APPROVE
+  reviewer: Example Reviewer
+  rationale: "Synthetic evidence reviewed for demo."
+execution: not performed</pre><p>For an actual demo, select the bundled Passing example, run pre-flight, then open Human Review and record an APPROVE action with a rationale.</p></article><article class="card"><h3>BLOCK · synthetic blocking example</h3><pre>decision: BLOCK
+mandatory_checks: FAIL or UNKNOWN
+review:
+  available actions: REJECT / REQUEST_CHANGES
+execution: not performed</pre><p>The bundled Blocking example demonstrates the block path. The current app intentionally does not allow a BLOCK result to be approved through its human-review action list.</p></article></div><div class="callout"><h3>Try it in under a minute</h3><ol><li>Open Governance OS and select <b>Campaign QA</b>.</li><li>Leave input mode on <b>Bundled example</b>.</li><li>Select <b>Blocking example</b> and run pre-flight.</li><li>Repeat with <b>Passing example</b>, then go to Human Review and record a demo reviewer, APPROVE, and a short rationale.</li><li>Open Audit Ledger to inspect recorded assessment and review events.</li></ol><p>The repository source confirms these controls and bundled-example labels. Streamlit may take time to wake when idle.</p></div></div></section><section class="section"><div class="wrap"><div class="eyebrow">Evidence and limits</div><h2>What the repository supports</h2><ul><li>Python validation engine, configurable JSON policy and Streamlit interface.</li><li>Synthetic pass/block inputs and machine-readable evidence output.</li><li>Portfolio assessment, human-review recording and local hash-chain verification.</li><li>Automated tests and GitHub Actions workflow.</li><li>No production Campaign connection, campaign execution, real recipient data or unrestricted AI override.</li></ul><p><a href="https://github.com/sghatge/adobe-campaign-v8-governance/blob/main/docs/case-studies/governance-os-engineering-case-study.md">Full engineering case study ↗</a></p></div></section></main><footer><div class="wrap">Independent engineering reference · Synthetic examples only · <a href="index.html">Governance OS page</a></div></footer></body></html>
