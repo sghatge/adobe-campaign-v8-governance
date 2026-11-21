@@ -187,3 +187,27 @@ streamlit run streamlit_app.py
 
 The dashboard is an educational reference interface, not a production
 campaign approval system.
+
+## v2 Explainable Investigation
+
+The v2 release adds an offline, read-only investigation layer that consumes
+the deterministic QA evidence report.
+
+### Capabilities
+
+- Maps known QA rule findings to generic diagnostic explanations.
+- Classifies findings by advisory risk: CRITICAL, HIGH or LOW.
+- Recommends evidence a human reviewer should collect.
+- Marks findings for human review.
+- Flags unknown rule identifiers as unclassified rather than guessing.
+- Exports the QA and investigation reports together.
+
+### Decision authority and limitations
+
+The deterministic QA engine remains the sole source of the APPROVE/BLOCK
+decision. The investigation layer cannot change the decision, policy,
+approval state or campaign execution.
+
+This release does not call an LLM, external API or production platform.
+Recommendations are generic diagnostic guidance, not verified root causes.
+All examples must remain synthetic.

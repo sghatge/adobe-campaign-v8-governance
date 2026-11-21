@@ -9,6 +9,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from acc_v8_qa.engine import evaluate, load_json
 from acc_v8_qa.dashboard import parse_campaign_upload
+from acc_v8_qa.investigation import investigate
 
 st.set_page_config(
     page_title="Campaign Governance Console",
@@ -17,24 +18,20 @@ st.set_page_config(
 )
 
 st.title("🛡️ Campaign Governance Console")
-st.caption(
-    "Deterministic pre-flight validation | "
-    "Synthetic reference implementation"
-)
+st.caption("Deterministic pre-flight QA | Explainable investigation | Synthetic data")
 
 st.info(
-    "Independent demonstration only. This application does not connect "
-    "to Adobe Campaign or execute campaigns. Use synthetic data only."
+    "Independent demonstration. No production connection or campaign execution. "
+    "Use synthetic data only."
 )
 
-policy_path = ROOT / "config" / "policy.json"
-policy = load_json(policy_path)
+policy = load_json(ROOT / "config" / "policy.json")
 
 st.sidebar.header("Assessment settings")
 st.sidebar.write("Policy version:", policy["policy_version"])
 st.sidebar.write(
     "Audience variance limit:",
-    f'{policy["audience_drift_limit"]:.0%}'
+    f'{policy["audience_drift_limit"]:.0%}',
 )
 st.sidebar.write("Maximum JSON size: 256 KB")
 
@@ -52,13 +49,11 @@ if mode == "Bundled example":
         "Select synthetic campaign",
         ["Passing example", "Blocking example"],
     )
-
     filename = (
         "campaign-pass.json"
         if example == "Passing example"
         else "campaign-fail.json"
     )
-
     if st.button("Run pre-flight assessment", type="primary"):
         campaign = load_json(ROOT / "samples" / filename)
 
@@ -66,79 +61,110 @@ else:
     uploaded = st.file_uploader(
         "Upload campaign JSON",
         type=["json"],
-        help="Maximum size 256 KB. Synthetic data only.",
+        help="Maximum 256 KB. Synthetic data only.",
     )
-
-    if uploaded is not None:
-        raw = uploaded.getvalue()
-
-        if st.button("Validate and assess", type="primary"):
-            try:
-                campaign = parse_campaign_upload(raw)
-            except ValueError as exc:
-                input_error = str(exc)
+    if uploaded is not None and st.button(
+        "Validate and assess", type="primary"
+    ):
+        try:
+            campaign = parse_campaign_upload(uploaded.getvalue())
+        except ValueError as exc:
+            input_error = str(exc)
 
 if input_error:
     st.error(input_error)
 
 if campaign is not None:
-    report = evaluate(campaign, policy)
+    qa_report = evaluate(campaign, policy)
+    advisory = investigate(qa_report)
 
     st.divider()
-    st.subheader("Assessment result")
+    st.subheader("1. Deterministic QA decision")
 
-    decision = report["decision"]
-
-    if decision == "APPROVE":
+    if qa_report["decision"] == "APPROVE":
         st.success("APPROVE — all mandatory checks passed.")
     else:
         st.error("BLOCK — mandatory checks failed or remain unknown.")
 
-    summary = report["summary"]
-
+    summary = qa_report["summary"]
     cols = st.columns(4)
-    metrics = [
+    for col, (label, value) in zip(cols, [
         ("PASS", summary["pass"]),
         ("FAIL", summary["fail"]),
         ("UNKNOWN", summary["unknown"]),
         ("WARN", summary["warn"]),
-    ]
-
-    for col, (label, value) in zip(cols, metrics):
+    ]):
         col.metric(label, value)
 
-    st.write("**Campaign reference:**", report["campaign_id"])
-    st.write("**Policy version:**", report["policy_version"])
-    st.write("**Blocking checks:**", report["blocking_count"])
+    st.write("**Campaign reference:**", qa_report["campaign_id"])
+    st.write("**Policy version:**", qa_report["policy_version"])
+    st.write("**Blocking checks:**", qa_report["blocking_count"])
 
-    st.divider()
     st.subheader("Rule-level evidence")
-
-    for item in report["checks"]:
+    for item in qa_report["checks"]:
         status = item["status"]
-        title = f'{item["rule_id"]} — {status}'
-
-        with st.expander(title, expanded=status in ("FAIL", "UNKNOWN")):
+        with st.expander(
+            f'{item["rule_id"]} — {status}',
+            expanded=status in ("FAIL", "UNKNOWN"),
+        ):
             st.write(item["message"])
 
     st.divider()
-    st.subheader("Evidence report")
+    st.subheader("2. Explainable investigation")
+    st.caption(
+        "Offline advisory mode. No LLM or external service is called. "
+        "The investigation layer cannot override the deterministic decision."
+    )
 
-    report_json = json.dumps(report, indent=2)
+    overview = advisory["summary"]
+    cols = st.columns(4)
+    cols[0].metric("Findings", overview["finding_count"])
+    cols[1].metric("Critical", overview["critical"])
+    cols[2].metric("High", overview["high"])
+    cols[3].metric("Low", overview["low"])
+
+    st.write("**Human review:**", overview["human_review"])
+    st.write(
+        "**Decision authority:**",
+        advisory["decision_source"],
+    )
+
+    if not advisory["findings"]:
+        st.success("No advisory findings were generated.")
+    else:
+        for finding in advisory["findings"]:
+            with st.expander(
+                f'{finding["risk"]} | {finding["rule_id"]} — {finding["title"]}',
+                expanded=finding["risk"] == "CRITICAL",
+            ):
+                st.write("**Observed evidence:**", finding["evidence_fact"])
+                st.write("**Explanation:**", finding["explanation"])
+                st.write("**Confidence:**", finding["confidence"])
+                st.write("**Evidence to collect:**")
+                for evidence in finding["recommended_evidence"]:
+                    st.write(f"- {evidence}")
+
+    st.divider()
+    st.subheader("3. Combined audit evidence")
+
+    combined_report = {
+        "qa_report": qa_report,
+        "investigation_report": advisory,
+    }
+    report_json = json.dumps(combined_report, indent=2)
 
     st.download_button(
-        "⬇️ Download JSON evidence report",
+        "⬇️ Download combined QA and investigation report",
         data=report_json,
-        file_name="campaign-qa-evidence.json",
+        file_name="campaign-governance-evidence.json",
         mime="application/json",
     )
 
-    with st.expander("View complete JSON report"):
-        st.json(report)
+    with st.expander("View complete combined JSON"):
+        st.json(combined_report)
 
 st.divider()
 st.caption(
-    "Governance boundary: AI assistance is not part of this release. "
-    "Only the deterministic engine decides APPROVE or BLOCK. "
-    "No campaign execution or automatic override is available."
+    "Governance boundary: deterministic controls own APPROVE/BLOCK. "
+    "Investigation is read-only advisory guidance. No execution or automatic override."
 )
