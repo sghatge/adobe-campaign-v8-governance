@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="690" viewBox="0 0 1200 690" role="img" aria-labelledby="title desc">
+<title id="title">Governance OS reference architecture</title>
+<desc id="desc">Campaign input flows through deterministic policy controls and an approve or block decision. Human review and audit evidence are recorded separately. Advisory intelligence cannot override enforcement.</desc>
+<defs>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+    <path d="M0 0 L9 3 L0 6" fill="#62a5ff"/>
+  </marker>
+  <style>
+    .bg{fill:#0b1220}
+    .panel{fill:#17263b;stroke:#385273;stroke-width:2}
+    .title{fill:#f0f5ff;font:700 27px Arial}
+    .heading{fill:#f0f5ff;font:700 18px Arial}
+    .body{fill:#b9c9df;font:15px Arial}
+    .small{fill:#91a8c7;font:13px Arial}
+    .blue{fill:#75b5ff}
+    .green{fill:#6ee7b7}
+    .line{stroke:#62a5ff;stroke-width:3;fill:none;marker-end:url(#arrow)}
+    .dash{stroke:#6ee7b7;stroke-width:2;stroke-dasharray:8 7;fill:none}
+  </style>
+</defs>
+<rect class="bg" width="1200" height="690" rx="18"/>
+<text x="55" y="58" class="title">GOVERNANCE OS · REFERENCE ARCHITECTURE</text>
+<text x="55" y="88" class="body">Deterministic enforcement · Human accountability · Explainable evidence</text>
+
+<rect class="panel" x="55" y="145" width="235" height="112" rx="12"/>
+<text x="78" y="181" class="heading">Campaign Input</text>
+<text x="78" y="210" class="body">Synthetic assessment</text>
+<text x="78" y="233" class="small">Validated structured data</text>
+
+<path class="line" d="M290 201 H340"/>
+
+<rect class="panel" x="350" y="145" width="235" height="112" rx="12"/>
+<text x="373" y="181" class="heading">Policy Engine</text>
+<text x="373" y="210" class="body">Deterministic controls</text>
+<text x="373" y="233" class="small">Versioned policy rules</text>
+
+<path class="line" d="M585 201 H635"/>
+
+<rect class="panel" x="645" y="145" width="235" height="112" rx="12"/>
+<text x="668" y="181" class="heading">Decision Gate</text>
+<text x="668" y="210" class="green" font-size="17" font-weight="bold">APPROVE / BLOCK</text>
+<text x="668" y="233" class="small">Rule-driven outcome</text>
+
+<path class="line" d="M880 201 H930"/>
+
+<rect class="panel" x="940" y="145" width="205" height="112" rx="12"/>
+<text x="963" y="181" class="heading">Human Review</text>
+<text x="963" y="210" class="body">Reviewer and rationale</text>
+<text x="963" y="233" class="small">Accountability record</text>
+
+<rect class="panel" x="115" y="355" width="285" height="115" rx="12"/>
+<text x="140" y="392" class="heading">Portfolio Intelligence</text>
+<text x="140" y="422" class="body">Multi-campaign assessment</text>
+<text x="140" y="445" class="small">Risk classification and visibility</text>
+
+<rect class="panel" x="455" y="355" width="285" height="115" rx="12"/>
+<text x="480" y="392" class="heading">Audit Evidence</text>
+<text x="480" y="422" class="body">Hash-chained event history</text>
+<text x="480" y="445" class="small">Integrity verification</text>
+
+<rect class="panel" x="795" y="355" width="285" height="115" rx="12"/>
+<text x="820" y="392" class="heading">Advisory Intelligence</text>
+<text x="820" y="422" class="body">Explain findings and risks</text>
+<text x="820" y="445" class="small">Cannot override policy decisions</text>
+
+<path class="dash" d="M762 257 V315 H258 V355"/>
+<path class="dash" d="M762 257 V315 H598 V355"/>
+<path class="dash" d="M762 257 V315 H938 V355"/>
+
+<rect x="55" y="530" width="1090" height="95" rx="12" fill="#122b36" stroke="#39745e" stroke-width="2"/>
+<text x="82" y="568" class="green" font-size="19" font-weight="bold">GOVERNANCE BOUNDARY</text>
+<text x="82" y="596" class="body">Human review records accountability. Advisory intelligence provides context. Neither can release a blocked campaign.</text>
+<text x="55" y="660" class="small">Independent reference implementation · Synthetic data only · Not a production execution system</text>
+</svg>
