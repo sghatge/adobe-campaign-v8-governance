@@ -276,3 +276,28 @@ or concurrent-write protection. Reviewer identity is self-asserted in
 this synthetic demonstration.
 
 No campaign execution or release integration is provided.
+
+
+## Public demo and zero-cost hosting
+
+- **Portfolio landing page:** https://sghatge.github.io/adobe-campaign-v8-governance/
+- **Interactive Streamlit demo:** https://adobe-campaign-v8-governance-3rzwjb2pbqqftpm3fecxzd.streamlit.app/
+
+The static landing page is deployed from `docs/` using GitHub Pages and GitHub Actions. It is separate from the interactive application, so the project overview remains available even when the Streamlit demo is sleeping.
+
+The interactive demo uses Streamlit Community Cloud's free hosting tier. Free apps may sleep after inactivity and require a short wake-up delay. This is expected free-tier behaviour, not a paid uptime guarantee.
+
+No paid database, API key, or external AI service is required for the synthetic demonstration. Assessment history, human-review records and the hash-chained audit ledger currently use local JSON files in the app runtime; persistence across hosting restarts is not guaranteed. Download evidence exports when you need to retain a copy.
+
+### Free hosting architecture
+
+```text
+GitHub repository
+  |-- docs/ ----------------> GitHub Pages (static project front door)
+  |
+  |-- streamlit_app.py -----> Streamlit Community Cloud (interactive demo)
+  |
+  |-- .github/workflows/ ---> GitHub Actions (automated Pages deployment)
+```
+
+All examples remain synthetic. No production campaign connection or execution is provided.
