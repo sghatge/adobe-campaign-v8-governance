@@ -5,3 +5,8 @@ __pycache__/
 venv/
 reports/*.json
 .env
+
+# V3 local runtime records
+data/audit_ledger.json
+data/human_approvals.json
+data/portfolio_assessments.json
