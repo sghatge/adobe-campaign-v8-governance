@@ -3,42 +3,230 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Independent enterprise campaign governance engineering portfolio.">
-<title>Governance OS | Enterprise Campaign Intelligence</title>
+<meta name="theme-color" content="#0b1220">
+<meta name="description" content="Independent engineering portfolio demonstrating enterprise campaign governance, deterministic QA, portfolio risk intelligence and accountable human oversight.">
+<title>Governance OS | Enterprise AI & MarTech Engineering</title>
 <style>
+:root {
+  --bg:#0b1220; --panel:#121e31; --panel2:#18263b;
+  --text:#edf3ff; --muted:#a8b7cc; --blue:#62a5ff;
+  --green:#6ee7b7; --line:#2a3a52;
+}
 *{box-sizing:border-box}
-body{margin:0;background:#0f172a;color:#e5e7eb;font:16px Arial,sans-serif;line-height:1.6}
-main{max-width:1050px;margin:auto;padding:70px 24px}
-.tag{color:#60a5fa;font-weight:bold;letter-spacing:2px}
-h1{font-size:clamp(38px,7vw,68px);line-height:1.1;margin:20px 0}
-h2{margin-top:48px;color:#93c5fd}
-p{color:#cbd5e1;max-width:780px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:28px 0}
-.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:22px}
-.card h3{margin-top:0;color:#bfdbfe}
-a{color:#93c5fd}
-.btn{display:inline-block;background:#2563eb;color:white;text-decoration:none;padding:12px 18px;border-radius:8px;margin:12px 10px 12px 0}
-footer{margin-top:60px;border-top:1px solid #334155;padding-top:20px;color:#94a3b8;font-size:13px}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);
+font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.65}
+a{color:inherit;text-decoration:none}
+a:focus-visible{outline:3px solid var(--green);outline-offset:4px}
+.wrap{width:min(1120px,90%);margin:auto}
+nav{height:76px;border-bottom:1px solid var(--line);
+display:flex;align-items:center;justify-content:space-between}
+.brand{font-weight:800;letter-spacing:.4px}
+.brand span{color:var(--blue)}
+.navlinks{display:flex;gap:25px;color:var(--muted);font-size:14px}
+.hero{padding:100px 0 75px;max-width:850px}
+.eyebrow{color:var(--blue);font-weight:750;letter-spacing:2px;
+font-size:12px;text-transform:uppercase}
+h1{font-size:clamp(42px,7vw,72px);line-height:1.08;
+letter-spacing:-2px;margin:20px 0}
+h2{font-size:30px;line-height:1.2;margin:0 0 16px}
+h3{font-size:18px;margin:0 0 10px}
+.lead{font-size:19px;color:var(--muted);max-width:760px}
+.actions{display:flex;gap:13px;flex-wrap:wrap;margin-top:30px}
+.btn{display:inline-block;padding:12px 19px;border-radius:8px;
+font-weight:700;font-size:14px;border:1px solid var(--line)}
+.primary{background:#2868e8;border-color:#2868e8;color:white}
+.secondary{background:var(--panel)}
+.btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.section{padding:65px 0;border-top:1px solid var(--line)}
+.sub{color:var(--muted);max-width:760px;margin:0 0 28px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+.card{background:var(--panel);border:1px solid var(--line);
+border-radius:13px;padding:23px}
+.card p{color:var(--muted);font-size:14px;margin-bottom:0}
+.number{font-size:13px;color:var(--blue);font-weight:800;
+letter-spacing:1px;margin-bottom:16px}
+.architecture{display:grid;grid-template-columns:repeat(4,1fr);
+gap:10px;margin-top:25px}
+.step{background:var(--panel2);border:1px solid var(--line);
+border-radius:10px;padding:18px;text-align:center}
+.step strong{display:block;font-size:14px}
+.step small{color:var(--muted)}
+.pill{display:inline-block;border:1px solid #31517a;color:#9bc6ff;
+border-radius:30px;padding:5px 11px;font-size:12px;margin:4px 5px 4px 0}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+ul{padding-left:20px;color:var(--muted)}
+li{margin:8px 0}
+.callout{background:linear-gradient(120deg,#142b4a,#122239);
+border:1px solid #31517a;border-radius:15px;padding:28px}
+footer{padding:30px 0 45px;color:var(--muted);font-size:13px;
+border-top:1px solid var(--line)}
+@media(max-width:800px){
+ .grid{grid-template-columns:repeat(2,1fr)}
+ .architecture{grid-template-columns:repeat(2,1fr)}
+ .split{grid-template-columns:1fr}
+ .navlinks{gap:12px;font-size:12px}
+}
+@media(max-width:520px){
+ .grid{grid-template-columns:1fr}
+ .navlinks a:nth-child(2){display:none}
+ .hero{padding:70px 0 55px}
+ h1{letter-spacing:-1px}
+}
 </style>
 </head>
 <body>
+<nav class="wrap">
+  <a class="brand" href="#">GOVERNANCE <span>OS</span></a>
+  <div class="navlinks">
+    <a href="#platform">Platform</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#evidence">Evidence</a>
+    <a href="#about">About</a>
+  </div>
+</nav>
+
 <main>
-<div class="tag">INDEPENDENT ENGINEERING PORTFOLIO</div>
-<h1>Governance OS</h1>
-<h2>Enterprise Campaign Intelligence</h2>
-<p>A practical demonstration of deterministic campaign quality assurance, portfolio risk assessment, human accountability and tamper-evident audit evidence.</p>
-<a class="btn" href="https://github.com/sghatge/adobe-campaign-v8-governance">Explore GitHub Repository</a>
-<a class="btn" href="https://github.com/sghatge/adobe-campaign-v8-governance/tree/main/docs">Read Documentation</a>
-<section class="grid">
-<div class="card"><h3>Campaign QA</h3><p>Policy-driven pre-flight controls, validation and explainable APPROVE/BLOCK decisions.</p></div>
-<div class="card"><h3>Portfolio Intelligence</h3><p>Multi-campaign assessments, risk classification and operational visibility.</p></div>
-<div class="card"><h3>Human Accountability</h3><p>Review records, reviewer rationale and controlled governance boundaries.</p></div>
-<div class="card"><h3>Audit Evidence</h3><p>Locally demonstrated hash-chained event history and integrity verification.</p></div>
+<section class="wrap hero">
+  <div class="eyebrow">Independent Engineering Portfolio · 2026</div>
+  <h1>Engineering trust into enterprise campaign operations.</h1>
+  <p class="lead">
+    A practical Governance OS demonstration combining deterministic
+    campaign quality controls, portfolio risk intelligence, human
+    accountability and verifiable audit evidence.
+  </p>
+  <div class="actions">
+    <a class="btn primary" href="https://adobe-campaign-v8-governance-3rzwjb2pbqqftpm3fecxzd.streamlit.app/" target="_blank" rel="noopener">Explore Live Governance OS ↗</a>
+    <a class="btn secondary" href="https://github.com/sghatge/adobe-campaign-v8-governance" target="_blank" rel="noopener">Explore Source Code ↗</a>
+  </div>
+  <p style="color:var(--muted);font-size:13px;margin-top:22px">
+    Independent project · Synthetic data only · No production connection
+    or campaign execution
+  </p>
 </section>
-<h2>Architecture principles</h2>
-<p>Deterministic controls own enforcement decisions. Human review records accountability. Advisory intelligence does not override policy decisions or authorize campaign execution.</p>
-<p><strong>Demonstration boundary:</strong> Synthetic data only. No production connection or campaign execution.</p>
-<footer>Independent portfolio project · Synthetic demonstration · Governance OS</footer>
+
+<section class="section" id="platform">
+<div class="wrap">
+  <div class="eyebrow">The platform</div>
+  <h2>From campaign checks to operational governance.</h2>
+  <p class="sub">Governance OS demonstrates how campaign controls,
+  risk visibility and human decisions can work together in one
+  explainable operating model.</p>
+  <div class="grid">
+    <article class="card">
+      <div class="number">01 / CONTROL</div>
+      <h3>Campaign QA</h3>
+      <p>Policy-driven pre-flight validation with explainable
+      APPROVE/BLOCK outcomes.</p>
+    </article>
+    <article class="card">
+      <div class="number">02 / INTELLIGENCE</div>
+      <h3>Portfolio Risk</h3>
+      <p>Multi-campaign assessment, risk classification and
+      operational visibility.</p>
+    </article>
+    <article class="card">
+      <div class="number">03 / ACCOUNTABILITY</div>
+      <h3>Human Approval</h3>
+      <p>Reviewer identity, rationale and controlled governance
+      boundaries.</p>
+    </article>
+    <article class="card">
+      <div class="number">04 / EVIDENCE</div>
+      <h3>Audit Ledger</h3>
+      <p>Locally demonstrated hash-chained event history and
+      integrity verification.</p>
+    </article>
+  </div>
+</div>
+</section>
+
+<section class="section" id="architecture">
+<div class="wrap">
+  <div class="eyebrow">Engineering architecture</div>
+  <h2>Deterministic enforcement. Explainable oversight.</h2>
+  <p class="sub">The architecture separates policy enforcement
+  from human accountability and advisory intelligence.</p>
+  <div class="architecture">
+    <div class="step"><strong>Campaign Input</strong><small>Synthetic assessment data</small></div>
+    <div class="step"><strong>Policy Engine</strong><small>Deterministic controls</small></div>
+    <div class="step"><strong>Decision Gate</strong><small>APPROVE / BLOCK</small></div>
+    <div class="step"><strong>Human Review</strong><small>Recorded accountability</small></div>
+  </div>
+  <div class="callout" style="margin-top:18px">
+    <h3>Core governance principle</h3>
+    Deterministic controls own enforcement decisions. Human review
+    records accountability. Advisory intelligence does not override
+    policy decisions or authorize campaign execution.
+  </div>
+</div>
+</section>
+
+<section class="section" id="evidence">
+<div class="wrap">
+  <div class="eyebrow">Technical proof of work</div>
+  <h2>Explore the engineering evidence.</h2>
+  <p class="sub">The repository contains the implementation,
+  policy configuration, synthetic examples, documentation and
+  automated tests.</p>
+  <div class="split">
+    <article class="card">
+      <h3>Implementation</h3>
+      <p>Python-based governance components, Streamlit interface,
+      policy configuration and test coverage.</p>
+      <p style="margin-top:20px">
+        <a class="btn primary" href="https://github.com/sghatge/adobe-campaign-v8-governance" target="_blank" rel="noopener">View Repository ↗</a>
+      </p>
+    </article>
+    <article class="card">
+      <h3>Documentation</h3>
+      <ul>
+        <li><a href="https://github.com/sghatge/adobe-campaign-v8-governance/blob/main/README.md">Project README ↗</a></li>
+        <li><a href="https://github.com/sghatge/adobe-campaign-v8-governance/blob/main/docs/adobe-campaign-v8-investigation.md">Engineering Investigation ↗</a></li>
+        <li><a href="https://github.com/sghatge/adobe-campaign-v8-governance/blob/main/docs/pre-flight-checklist.md">Pre-flight QA Checklist ↗</a></li>
+        <li><a href="https://github.com/sghatge/adobe-campaign-v8-governance/actions">Automated Test Workflows ↗</a></li>
+      </ul>
+    </article>
+  </div>
+  <div style="margin-top:22px">
+    <span class="pill">Python</span>
+    <span class="pill">Streamlit</span>
+    <span class="pill">Policy-as-Code</span>
+    <span class="pill">Deterministic QA</span>
+    <span class="pill">Audit Evidence</span>
+    <span class="pill">GitHub Actions</span>
+    <span class="pill">Enterprise MarTech</span>
+  </div>
+</div>
+</section>
+
+<section class="section" id="about">
+<div class="wrap">
+  <div class="eyebrow">Professional focus</div>
+  <h2>Enterprise MarTech. AI transformation. Governance engineering.</h2>
+  <p class="sub">A portfolio exploring the intersection of CRM
+  technology, marketing operations, automation, enterprise
+  architecture and responsible AI adoption.</p>
+  <div class="callout">
+    <h3>Connect and explore</h3>
+    <p style="color:var(--muted)">Explore the implementation and
+    follow the engineering work through the public repository.</p>
+    <div class="actions">
+      <a class="btn primary" href="https://github.com/sghatge" target="_blank" rel="noopener">GitHub Profile ↗</a>
+      <a class="btn secondary" href="https://github.com/sghatge/adobe-campaign-v8-governance" target="_blank" rel="noopener">Project Repository ↗</a>
+    </div>
+  </div>
+</div>
+</section>
 </main>
+
+<footer>
+<div class="wrap">
+  <strong>Governance OS</strong> · Independent engineering portfolio
+  <br>Demonstration uses synthetic data only. It does not connect to
+  production systems or execute campaigns.
+  <br>© 2026 · Built as an independent engineering project.
+</div>
+</footer>
 </body>
 </html>
