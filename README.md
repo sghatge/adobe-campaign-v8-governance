@@ -151,3 +151,39 @@ flowchart TB
 | Traceability | Evidence, timestamps and policy versions |
 | Synthetic data | No customer or production records |
 
+
+---
+
+## Interactive Governance Dashboard
+
+The repository includes a Streamlit interface for running the deterministic
+pre-flight engine against bundled examples or synthetic JSON uploads.
+
+### Run locally
+
+```bash
+pip install -r requirements.txt
+streamlit run streamlit_app.py
+```
+
+### Dashboard capabilities
+
+- Select a bundled passing or blocking example.
+- Upload a JSON campaign payload (256 KB maximum).
+- Validate input structure and field types.
+- View APPROVE or BLOCK decisions.
+- Inspect PASS, FAIL, UNKNOWN and WARN results.
+- Download a JSON evidence report.
+
+### Security and governance boundaries
+
+- Synthetic data only.
+- No production Adobe Campaign connection.
+- No campaign execution.
+- No uploaded-file persistence.
+- No AI override or automatic approval.
+- Unexpected JSON fields and malformed inputs are rejected.
+- Mandatory FAIL or UNKNOWN results remain blocking.
+
+The dashboard is an educational reference interface, not a production
+campaign approval system.
