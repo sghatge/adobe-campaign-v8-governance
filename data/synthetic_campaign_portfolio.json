@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0.0",
+  "data_classification": "SYNTHETIC",
+  "campaigns": [
+    {
+      "campaign_id": "PORTFOLIO-001",
+      "campaign_type": "Product Launch",
+      "segment": "Segment Alpha",
+      "audience_count": 1000,
+      "historical_average": 1000,
+      "invalid_consent_count": 0,
+      "suppressed_recipient_count": 0,
+      "workflow_status": "Finished",
+      "typology_active": true,
+      "proof_approved": true,
+      "delivery_status": "not_started",
+      "subject": "Your product update"
+    },
+    {
+      "campaign_id": "PORTFOLIO-002",
+      "campaign_type": "Promotion",
+      "segment": "Segment Beta",
+      "audience_count": 1400,
+      "historical_average": 1000,
+      "invalid_consent_count": 2,
+      "suppressed_recipient_count": 1,
+      "workflow_status": "Running",
+      "typology_active": false,
+      "proof_approved": false,
+      "delivery_status": "pending",
+      "subject": "Your product update"
+    },
+    {
+      "campaign_id": "PORTFOLIO-003",
+      "campaign_type": "Onboarding",
+      "segment": "Segment Gamma",
+      "audience_count": 1020,
+      "historical_average": 1000,
+      "invalid_consent_count": 0,
+      "suppressed_recipient_count": 0,
+      "workflow_status": "Finished",
+      "typology_active": true,
+      "proof_approved": true,
+      "delivery_status": "not_started",
+      "subject": "Welcome to your new account"
+    },
+    {
+      "campaign_id": "PORTFOLIO-004",
+      "campaign_type": "Retention",
+      "segment": "Segment Delta",
+      "audience_count": 1250,
+      "historical_average": 1000,
+      "invalid_consent_count": 0,
+      "suppressed_recipient_count": 0,
+      "workflow_status": "Finished",
+      "typology_active": true,
+      "proof_approved": true,
+      "delivery_status": "not_started",
+      "subject": "A personalised update for you"
+    },
+    {
+      "campaign_id": "PORTFOLIO-005",
+      "campaign_type": "Cross-Sell",
+      "segment": "Segment Epsilon",
+      "audience_count": 980,
+      "historical_average": 1000,
+      "invalid_consent_count": 1,
+      "suppressed_recipient_count": 0,
+      "workflow_status": "Finished",
+      "typology_active": true,
+      "proof_approved": true,
+      "delivery_status": "not_started",
+      "subject": "Discover something new"
+    },
+    {
+      "campaign_id": "PORTFOLIO-006",
+      "campaign_type": "Re-engagement",
+      "segment": "Segment Zeta",
+      "audience_count": 1000,
+      "historical_average": 1000,
+      "invalid_consent_count": 0,
+      "suppressed_recipient_count": 0,
+      "workflow_status": "Running",
+      "typology_active": true,
+      "proof_approved": false,
+      "delivery_status": "pending",
+      "subject": "We have an update for you"
+    }
+  ]
+}

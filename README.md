@@ -211,3 +211,37 @@ approval state or campaign execution.
 This release does not call an LLM, external API or production platform.
 Recommendations are generic diagnostic guidance, not verified root causes.
 All examples must remain synthetic.
+
+## v3 — Enterprise Governance Portfolio Control Tower
+
+V3 extends the V2 single-campaign demonstration into a synthetic
+multi-campaign portfolio assessment experience.
+
+### Portfolio capabilities
+
+- Assess multiple synthetic campaigns in one batch.
+- Reuse the V2 deterministic QA engine without changing its decision logic.
+- Reuse V2 read-only investigation explanations.
+- Summarise APPROVE/BLOCK decisions and CRITICAL/HIGH/MODERATE/LOW risk.
+- Aggregate FAIL and UNKNOWN occurrences by governance control.
+- Retain timestamped assessment batches in local JSON.
+- Export portfolio results as CSV.
+- Inspect campaign-level findings and human-review indicators.
+
+### Local storage
+
+- `data/synthetic_campaign_portfolio.json` — synthetic campaign inputs.
+- `data/portfolio_assessments.json` — append-only assessment history.
+
+The history writer uses atomic file replacement. This is a local prototype,
+not a tamper-proof or multi-user audit ledger. It does not provide database
+transactions, access control, cryptographic signing or immutable storage.
+
+### V3 decision boundary
+
+Every campaign is assessed by the existing deterministic engine.
+The portfolio layer aggregates results; it does not change individual
+APPROVE/BLOCK decisions. Investigation remains advisory and read-only.
+
+All campaign data is synthetic. No production connectors, customer records,
+external APIs or campaign execution are included.
