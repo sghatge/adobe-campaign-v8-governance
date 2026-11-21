@@ -26,6 +26,128 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+
+# GOVERNANCE_OS_V32_THEME
+st.markdown("""
+<style>
+:root {
+  --gov-navy: #101a2b;
+  --gov-blue: #2864dc;
+  --gov-cyan: #22a6a1;
+  --gov-ink: #172338;
+  --gov-muted: #718096;
+  --gov-border: #e4eaf2;
+  --gov-surface: #ffffff;
+  --gov-soft: #f4f7fb;
+}
+.stApp {
+  background: #f5f7fb;
+  color: var(--gov-ink);
+}
+[data-testid="stHeader"] {
+  background: rgba(245,247,251,0.92);
+}
+[data-testid="stMainBlockContainer"] {
+  max-width: 1500px;
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+}
+[data-testid="stSidebar"] {
+  background: linear-gradient(180deg, #101a2b 0%, #17263c 100%);
+  border-right: 1px solid #26364d;
+}
+[data-testid="stSidebar"] * {
+  color: #edf3fc;
+}
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {
+  color: #b8c6d9;
+}
+h1, h2, h3 {
+  color: var(--gov-ink);
+  letter-spacing: -0.025em;
+}
+h1 {
+  font-weight: 750;
+  padding-bottom: 0.25rem;
+}
+h2, h3 {
+  font-weight: 680;
+}
+[data-testid="stMetric"] {
+  background: var(--gov-surface);
+  border: 1px solid var(--gov-border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 3px 12px rgba(23,35,56,0.035);
+  min-height: 112px;
+}
+[data-testid="stMetricLabel"] {
+  color: var(--gov-muted);
+  font-weight: 600;
+}
+[data-testid="stMetricValue"] {
+  color: var(--gov-ink);
+  font-weight: 750;
+}
+.stButton > button,
+.stDownloadButton > button {
+  border-radius: 9px;
+  min-height: 42px;
+  font-weight: 650;
+  border: 1px solid #d7e0ed;
+  transition: all 140ms ease-in-out;
+}
+.stButton > button[kind="primary"] {
+  background: var(--gov-blue);
+  border-color: var(--gov-blue);
+  color: white;
+}
+.stButton > button:hover,
+.stDownloadButton > button:hover {
+  border-color: var(--gov-blue);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(40,100,220,0.12);
+}
+[data-testid="stDataFrame"],
+[data-testid="stTable"] {
+  border: 1px solid var(--gov-border);
+  border-radius: 11px;
+  overflow: hidden;
+  background: white;
+}
+[data-testid="stAlert"] {
+  border-radius: 10px;
+  border-width: 1px;
+}
+[data-testid="stExpander"] {
+  border: 1px solid var(--gov-border);
+  border-radius: 10px;
+  background: white;
+}
+[data-testid="stTabs"] button {
+  font-weight: 650;
+}
+input, textarea, [data-baseweb="select"] {
+  border-radius: 8px !important;
+}
+hr {
+  border-color: var(--gov-border);
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 768px) {
+  [data-testid="stMainBlockContainer"] {
+    padding: 1rem 0.8rem 2rem;
+  }
+  [data-testid="stMetric"] {
+    padding: 13px;
+    min-height: 90px;
+  }
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 POLICY_PATH = ROOT / "config" / "policy.json"
 PORTFOLIO_PATH = ROOT / "data" / "synthetic_campaign_portfolio.json"
 HISTORY_PATH = ROOT / "data" / "portfolio_assessments.json"
