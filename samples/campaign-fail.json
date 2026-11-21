@@ -1,0 +1,12 @@
+{
+  "campaign_id": "DEMO-CAMPAIGN-002",
+  "audience_count": 1400,
+  "historical_average": 1000,
+  "invalid_consent_count": 2,
+  "suppressed_recipient_count": 1,
+  "workflow_status": "Running",
+  "typology_active": false,
+  "proof_approved": false,
+  "delivery_status": "pending",
+  "subject": "Your product update"
+}

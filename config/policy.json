@@ -1,0 +1,7 @@
+{
+  "policy_version": "1.0.0",
+  "audience_drift_limit": 0.15,
+  "subject_max_length": 50,
+  "required_workflow_status": "Finished",
+  "required_delivery_status": "not_started"
+}

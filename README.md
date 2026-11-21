@@ -1,35 +1,80 @@
 # Adobe Campaign v8 Governance
 
-An independent, generic reference project for governance patterns in Adobe Campaign Classic v8 environments.
+An independent reference project demonstrating deterministic campaign governance and controlled AI-assisted investigation patterns.
 
-This repository contains an architecture discussion and a configurable pre-flight checklist. It uses no customer, employer, market, campaign, recipient, or production data.
+This project uses synthetic examples only. It does not connect to a production Adobe Campaign instance.
 
-## Contents
-- [Architecture and Governance Baseline](docs/adobe-campaign-v8-investigation.md)
-- [Pre-Flight Gate Checklist](docs/pre-flight-checklist.md)
+## Architecture
 
-## Governance approach
+```text
+Synthetic Campaign Input
+          |
+          v
+Deterministic Pre-Flight Engine
+          |
+          v
+Policy Validation
+          |
+     +----+----+
+     |         |
+   PASS       BLOCK
+     |         |
+     v         v
+Evidence Report / Human Review
+```
 
-**Deterministic controls enforce what must be true. AI investigates, contextualizes, and recommends. Authorized humans retain approval authority.**
+AI-assisted investigation is a separate layer. It may explain evidence and recommend diagnostics, but it cannot override a mandatory deterministic block.
 
-The reference model separates:
-1. **Deterministic Pre-Flight Gate** — explicit validation rules and fail-closed handling.
-2. **AI-Assisted Investigation** — evidence-based explanations and diagnostic suggestions that cannot bypass mandatory controls.
+## Repository contents
 
-## Safe-use boundaries
+- `docs/` — architecture and governance baseline
+- `src/acc_v8_qa/` — Python validation engine
+- `config/` — configurable policy
+- `samples/` — synthetic campaign examples
+- `tests/` — automated test suite
+- `.github/workflows/` — continuous integration
 
-- Treat all examples and thresholds as illustrative.
-- Do not add employer, customer, tenant, market, campaign, recipient, or confidential operational information.
-- Validate product capabilities against current Adobe documentation and the intended deployment.
-- This project is independent and is not affiliated with or endorsed by Adobe.
+## Run locally
 
-## Suggested use
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 
-1. Review the baseline against official product documentation.
-2. Map controls to the intended environment.
-3. Configure thresholds, evidence requirements, and timeout behavior through an approved policy.
-4. Test fail-closed paths in a non-production environment.
+PYTHONPATH=src pytest -v
 
-## Topics
+PYTHONPATH=src python -m acc_v8_qa.cli samples/campaign-pass.json
+```
 
-Adobe Campaign Classic v8 · CRM Operations · Campaign Governance · Agentic AI · Human-in-the-Loop
+To evaluate a blocking example:
+
+```bash
+PYTHONPATH=src python -m acc_v8_qa.cli samples/campaign-fail.json
+```
+
+The blocking example intentionally returns exit code 1.
+
+## Governance controls
+
+- Audience variance against a configurable baseline.
+- Consent and suppression evidence.
+- Workflow completion.
+- Mandatory typology activation.
+- Explicit human proof approval.
+- Asynchronous delivery status.
+- Advisory content checks.
+- Machine-readable evidence reports.
+
+## Safety model
+
+A mandatory `FAIL` or `UNKNOWN` produces `BLOCK`.
+
+Warnings are advisory and cannot independently create a blocking decision.
+
+No campaign execution, automatic override, or production integration is implemented.
+
+## Scope and disclaimer
+
+This is an independent educational reference implementation. It is not affiliated with or endorsed by Adobe. Product capabilities, schemas, thresholds, and deployment details must be verified against current official documentation and the intended environment.
+
+All sample data is synthetic. Do not add employer, customer, tenant, market, recipient, or confidential operational information.
