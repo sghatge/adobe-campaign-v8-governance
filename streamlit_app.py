@@ -1,13 +1,23 @@
 import csv
+import importlib
 import io
 import json
 import sys
 from pathlib import Path
 
-import streamlit as st
-
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "src"))
+importlib.invalidate_caches()
+
+# Streamlit may rerun this script in a process that still has local modules
+# cached from the prior deployed revision. Refresh these two updated modules so
+# the Phase 2 exports are available after a repository update.
+for _module_name in ("governance.audit", "governance.campaign_guardian"):
+    _cached_module = sys.modules.get(_module_name)
+    if _cached_module is not None:
+        importlib.reload(_cached_module)
+
+import streamlit as st
 
 from acc_v8_qa.engine import evaluate, load_json
 from acc_v8_qa.dashboard import parse_campaign_upload
