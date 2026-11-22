@@ -33,7 +33,7 @@ from governance.approval import record_review, read_approvals
 from governance.campaign_guardian import (
     MAX_ITERATIONS, build_review_packet, create_candidate_playbook, read_playbooks,
     reviewer_evidence_improver, playbook_diff, review_candidate_playbook,
-    run_bounded_improvement_loop,
+    run_bounded_improvement_loop, verify_review_packet,
 )
 
 st.set_page_config(
@@ -572,6 +572,8 @@ elif page == "Campaign Guardian":
             file_name="campaign-guardian-review.json",
             mime="application/json",
         )
+        packet_check = verify_review_packet(packet)
+        st.caption(f"Packet integrity: {'VALID' if packet_check['valid'] else 'INVALID'} · SHA-256 {packet_check.get('digest', 'unavailable')}")
         st.subheader("Bounded improvement loop")
         st.dataframe(guardian_result["iterations"], use_container_width=True, hide_index=True)
         st.caption("The quality score is descriptive only. Any failed or unknown mandatory invariant keeps the decision at BLOCK.")
