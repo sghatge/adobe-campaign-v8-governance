@@ -5,6 +5,8 @@ compliance gate; quality scores and proposed playbooks cannot override it.
 from __future__ import annotations
 
 import copy
+import hashlib
+import hmac
 import json
 import os
 import re
@@ -355,7 +357,7 @@ def build_review_packet(loop_result, policy_version, audit_integrity):
     if not isinstance(audit_integrity, dict) or not isinstance(audit_integrity.get("valid"), bool):
         raise ValueError("Audit integrity evidence is required.")
 
-    return {
+    packet = {
         "packet_version": 1,
         "generated_at": _utc_now(),
         "campaign_id": str(final.get("campaign_id", "UNIDENTIFIED")),
@@ -369,4 +371,42 @@ def build_review_packet(loop_result, policy_version, audit_integrity):
         "improvement_iterations": copy.deepcopy(iterations),
         "audit_integrity": copy.deepcopy(audit_integrity),
         "release_authorized": False,
+    }
+    packet["integrity"] = {
+        "algorithm": "SHA-256",
+        "digest": _review_packet_digest(packet),
+        "covers": "All packet fields except integrity.",
+    }
+    return packet
+
+
+def _review_packet_digest(packet):
+    payload = {key: value for key, value in packet.items() if key != "integrity"}
+    canonical = json.dumps(
+        payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+        allow_nan=False,
+    ).encode("utf-8")
+    return hashlib.sha256(canonical).hexdigest()
+
+
+def verify_review_packet(packet):
+    """Check the packet digest; this detects edits but is not a digital signature."""
+    if not isinstance(packet, dict):
+        return {"valid": False, "reason": "Review packet must be an object."}
+    integrity = packet.get("integrity")
+    if not isinstance(integrity, dict) or integrity.get("algorithm") != "SHA-256":
+        return {"valid": False, "reason": "Review packet digest metadata is missing or unsupported."}
+    supplied = integrity.get("digest")
+    if not isinstance(supplied, str):
+        return {"valid": False, "reason": "Review packet digest is missing."}
+    try:
+        computed = _review_packet_digest(packet)
+    except (TypeError, ValueError):
+        return {"valid": False, "reason": "Review packet cannot be canonicalized."}
+    valid = hmac.compare_digest(supplied, computed)
+    return {
+        "valid": valid,
+        "algorithm": "SHA-256",
+        "digest": computed,
+        "reason": "Digest matches packet contents." if valid else "Digest does not match packet contents.",
     }
