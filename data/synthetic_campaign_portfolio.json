@@ -14,7 +14,9 @@
       "typology_active": true,
       "proof_approved": true,
       "delivery_status": "not_started",
-      "subject": "Your product update"
+      "subject": "Your product update",
+      "consent_evidence_ref": "SYNTHETIC-CONSENT-PORTFOLIO-001",
+      "legal_basis_evidence_ref": "SYNTHETIC-LEGAL-PORTFOLIO-001"
     },
     {
       "campaign_id": "PORTFOLIO-002",
@@ -28,7 +30,9 @@
       "typology_active": false,
       "proof_approved": false,
       "delivery_status": "pending",
-      "subject": "Your product update"
+      "subject": "Your product update",
+      "consent_evidence_ref": "SYNTHETIC-CONSENT-PORTFOLIO-002",
+      "legal_basis_evidence_ref": "SYNTHETIC-LEGAL-PORTFOLIO-002"
     },
     {
       "campaign_id": "PORTFOLIO-003",
@@ -42,7 +46,9 @@
       "typology_active": true,
       "proof_approved": true,
       "delivery_status": "not_started",
-      "subject": "Welcome to your new account"
+      "subject": "Welcome to your new account",
+      "consent_evidence_ref": "SYNTHETIC-CONSENT-PORTFOLIO-003",
+      "legal_basis_evidence_ref": "SYNTHETIC-LEGAL-PORTFOLIO-003"
     },
     {
       "campaign_id": "PORTFOLIO-004",
@@ -56,7 +62,9 @@
       "typology_active": true,
       "proof_approved": true,
       "delivery_status": "not_started",
-      "subject": "A personalised update for you"
+      "subject": "A personalised update for you",
+      "consent_evidence_ref": "SYNTHETIC-CONSENT-PORTFOLIO-004",
+      "legal_basis_evidence_ref": "SYNTHETIC-LEGAL-PORTFOLIO-004"
     },
     {
       "campaign_id": "PORTFOLIO-005",
@@ -70,7 +78,9 @@
       "typology_active": true,
       "proof_approved": true,
       "delivery_status": "not_started",
-      "subject": "Discover something new"
+      "subject": "Discover something new",
+      "consent_evidence_ref": "SYNTHETIC-CONSENT-PORTFOLIO-005",
+      "legal_basis_evidence_ref": "SYNTHETIC-LEGAL-PORTFOLIO-005"
     },
     {
       "campaign_id": "PORTFOLIO-006",
@@ -84,7 +94,9 @@
       "typology_active": true,
       "proof_approved": false,
       "delivery_status": "pending",
-      "subject": "We have an update for you"
+      "subject": "We have an update for you",
+      "consent_evidence_ref": "SYNTHETIC-CONSENT-PORTFOLIO-006",
+      "legal_basis_evidence_ref": "SYNTHETIC-LEGAL-PORTFOLIO-006"
     }
   ]
 }

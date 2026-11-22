@@ -7,6 +7,8 @@ ALLOWED_FIELDS = {
     "audience_count",
     "historical_average",
     "invalid_consent_count",
+    "consent_evidence_ref",
+    "legal_basis_evidence_ref",
     "suppressed_recipient_count",
     "workflow_status",
     "typology_active",
@@ -24,6 +26,8 @@ INTEGER_FIELDS = {
 
 STRING_FIELDS = {
     "campaign_id",
+    "consent_evidence_ref",
+    "legal_basis_evidence_ref",
     "workflow_status",
     "delivery_status",
     "subject",

@@ -13,6 +13,8 @@ def test_valid_campaign_upload():
         "audience_count": 100,
         "historical_average": 100,
         "invalid_consent_count": 0,
+        "consent_evidence_ref": "SYNTHETIC-CONSENT-TEST",
+        "legal_basis_evidence_ref": "SYNTHETIC-LEGAL-TEST",
         "suppressed_recipient_count": 0,
         "workflow_status": "Finished",
         "typology_active": True,

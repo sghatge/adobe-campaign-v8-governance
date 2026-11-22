@@ -18,6 +18,11 @@ from governance.portfolio import (
 )
 from governance.audit import append_event, read_events, verify_chain
 from governance.approval import record_review, read_approvals
+from governance.campaign_guardian import (
+    MAX_ITERATIONS, create_candidate_playbook, read_playbooks,
+    reviewer_evidence_improver, review_candidate_playbook,
+    run_bounded_improvement_loop,
+)
 
 st.set_page_config(
     page_title="Governance OS",
@@ -153,6 +158,7 @@ PORTFOLIO_PATH = ROOT / "data" / "synthetic_campaign_portfolio.json"
 HISTORY_PATH = ROOT / "data" / "portfolio_assessments.json"
 AUDIT_PATH = ROOT / "data" / "audit_ledger.json"
 APPROVAL_PATH = ROOT / "data" / "human_approvals.json"
+PLAYBOOK_PATH = ROOT / "data" / "campaign_guardian_playbooks.json"
 
 policy = load_json(POLICY_PATH)
 
@@ -190,6 +196,7 @@ with st.sidebar:
             "Risk Intelligence",
             "Approval Centre",
             "Audit Ledger",
+            "Campaign Guardian",
             "Policy Registry",
         ],
         label_visibility="visible",
@@ -482,6 +489,103 @@ elif page == "Audit Ledger":
         )
     else:
         st.info("No audit events recorded yet.")
+
+elif page == "Campaign Guardian":
+    st.caption("Evidence-led recommendations · deterministic compliance gate · human-controlled playbooks")
+    st.info("Offline synthetic demonstration. Recommendations are never auto-applied. Quality scores cannot override compliance BLOCK.")
+    scenario = st.selectbox(
+        "Synthetic campaign scenario",
+        ["Fully evidenced passing example", "Consent evidence missing", "Legal-basis evidence missing", "Known blocking example"],
+    )
+    scenario_file = "campaign-fail.json" if scenario == "Known blocking example" else "campaign-pass.json"
+    evidence_col1, evidence_col2 = st.columns(2)
+    consent_reference = evidence_col1.text_input(
+        "Reviewer-provided synthetic consent reference",
+        placeholder="SYNTHETIC-CONSENT-REF",
+    )
+    legal_basis_reference = evidence_col2.text_input(
+        "Reviewer-provided synthetic legal-basis reference",
+        placeholder="SYNTHETIC-LEGAL-REF",
+    )
+    st.caption("References are applied one at a time as candidate revisions, then re-evaluated. Use synthetic references only.")
+    if st.button("Evaluate with Campaign Guardian", type="primary"):
+        try:
+            candidate = load_json(ROOT / "samples" / scenario_file)
+            if scenario == "Consent evidence missing":
+                candidate.pop("consent_evidence_ref", None)
+            elif scenario == "Legal-basis evidence missing":
+                candidate.pop("legal_basis_evidence_ref", None)
+            references = {
+                "consent_evidence_ref": consent_reference,
+                "legal_basis_evidence_ref": legal_basis_reference,
+            }
+            improver = reviewer_evidence_improver(
+                {field: value for field, value in references.items() if value.strip()}
+            )
+            result = run_bounded_improvement_loop(
+                candidate, policy, improver=improver, max_iterations=MAX_ITERATIONS
+            )
+            st.session_state["campaign_guardian_result"] = result
+            final = result["final_evaluation"]
+            append_event(
+                AUDIT_PATH, "CAMPAIGN_GUARDIAN_EVALUATED", final["campaign_id"],
+                "DETERMINISTIC_GUARDIAN",
+                {"decision": final["decision"], "quality_score": final["quality_score"],
+                 "iterations": result["iteration_count"], "recommendations": len(final["recommendations"]["recommendations"])},
+            )
+        except (ValueError, OSError) as exc:
+            st.error(str(exc))
+
+    guardian_result = st.session_state.get("campaign_guardian_result")
+    if guardian_result:
+        final = guardian_result["final_evaluation"]
+        cols = st.columns(3)
+        cols[0].metric("Deterministic decision", final["decision"])
+        cols[1].metric("Quality score", f"{final['quality_score']} / 100")
+        cols[2].metric("Review cycles", guardian_result["iteration_count"])
+        st.subheader("Bounded improvement loop")
+        st.dataframe(guardian_result["iterations"], use_container_width=True, hide_index=True)
+        st.caption("The quality score is descriptive only. Any failed or unknown mandatory invariant keeps the decision at BLOCK.")
+        recommendations = final["recommendations"]["recommendations"]
+        if recommendations:
+            st.subheader("Evidence-based recommendations")
+            st.dataframe(recommendations, use_container_width=True, hide_index=True)
+            playbooks = read_playbooks(PLAYBOOK_PATH)
+            active = playbooks["active_version"]
+            st.write(f"Active playbook: {active}. Candidate versions do not alter deterministic policy.")
+            pending = [v for v in playbooks["versions"] if v.get("status") == "PENDING_REVIEW"]
+            if not pending and st.button("Create candidate playbook version"):
+                try:
+                    created = create_candidate_playbook(PLAYBOOK_PATH, recommendations)
+                    st.success(f"Candidate {created['version']} is pending human review. The active version remains unchanged.")
+                    st.rerun()
+                except (ValueError, OSError) as exc:
+                    st.error(str(exc))
+            if pending:
+                candidate_version = pending[0]["version"]
+                st.subheader(f"Review candidate playbook {candidate_version}")
+                with st.form("campaign_guardian_playbook_review"):
+                    reviewer = st.text_input("Human reviewer identity")
+                    action = st.radio("Decision", ["APPROVE", "REJECT"], horizontal=True)
+                    rationale = st.text_area("Review rationale (required)")
+                    explicit = st.checkbox("I explicitly approve activating this candidate", disabled=action != "APPROVE")
+                    submitted = st.form_submit_button("Record human decision")
+                if submitted:
+                    try:
+                        review_candidate_playbook(
+                            PLAYBOOK_PATH, AUDIT_PATH, candidate_version, reviewer, action, rationale,
+                            explicit_human_approval=explicit,
+                        )
+                        st.success("Human decision recorded in the hash-chained audit ledger.")
+                        st.rerun()
+                    except (ValueError, OSError) as exc:
+                        st.error(str(exc))
+        else:
+            st.success("No recommendations were generated; all evaluated checks passed.")
+    playbooks = read_playbooks(PLAYBOOK_PATH)
+    st.subheader("Playbook version history")
+    st.dataframe(playbooks["versions"], use_container_width=True, hide_index=True)
+    st.caption("Activation is a human review action. This feature never deploys, sends, or executes a campaign.")
 
 elif page == "Policy Registry":
     st.caption("Current deterministic policy configuration")

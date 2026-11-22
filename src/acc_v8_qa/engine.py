@@ -39,16 +39,30 @@ def evaluate(campaign, policy):
                 f"Audience drift {drift:.1%}; permitted {limit:.1%}"
             )
 
-    # CON-001: Consent integrity
+    # CON-001: Consent evidence and integrity
+    consent_ref = campaign.get("consent_evidence_ref")
+    consent_ref_valid = (
+        isinstance(consent_ref, str)
+        and consent_ref.startswith("SYNTHETIC-")
+        and len(consent_ref) <= 160
+    )
     if not required("invalid_consent_count"):
-        add("CON-001", "UNKNOWN", "Consent evidence missing")
+        add("CON-001", "UNKNOWN", "Consent evidence count missing")
+    elif isinstance(campaign["invalid_consent_count"], bool) or not isinstance(campaign["invalid_consent_count"], int) or campaign["invalid_consent_count"] < 0:
+        add("CON-001", "UNKNOWN", "Consent evidence count is invalid")
+    elif campaign["invalid_consent_count"] > 0:
+        add("CON-001", "FAIL", f"Invalid consent records: {campaign['invalid_consent_count']}")
+    elif not consent_ref_valid:
+        add("CON-001", "UNKNOWN", "Consent evidence reference missing or not synthetic")
     else:
-        count = campaign["invalid_consent_count"]
-        add(
-            "CON-001",
-            "PASS" if count == 0 else "FAIL",
-            f"Invalid consent records: {count}"
-        )
+        add("CON-001", "PASS", f"Consent evidence recorded; invalid records: {campaign['invalid_consent_count']}")
+
+    # CON-002: Legal-basis evidence is a non-compensable compliance invariant.
+    legal_basis_ref = campaign.get("legal_basis_evidence_ref")
+    if not isinstance(legal_basis_ref, str) or not legal_basis_ref.startswith("SYNTHETIC-") or len(legal_basis_ref) > 160:
+        add("CON-002", "UNKNOWN", "Legal-basis evidence reference missing or not synthetic")
+    else:
+        add("CON-002", "PASS", "Synthetic legal-basis evidence reference recorded")
 
     # SUP-001: Suppression integrity
     if not required("suppressed_recipient_count"):
