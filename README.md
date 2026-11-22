@@ -329,3 +329,8 @@ The existing Campaign Guardian page can now export one JSON review packet for a 
 ## Campaign Guardian Phase 4 — review packet integrity
 
 Guardian review packets now include a SHA-256 digest over their contents. The app reports whether the exported packet digest matches its contents, and automated coverage confirms that edits are detected. This digest is tamper-evident for accidental or uncoordinated changes; it is not a digital signature and does not prove who created the packet. No paid service or external dependency is added.
+
+
+## Campaign Guardian Phase 5 — offline packet verification
+
+The Campaign Guardian page can verify a previously downloaded review packet. Upload a JSON packet to check whether its SHA-256 digest matches its contents; modified or malformed files are reported as invalid. Uploaded packet data is processed in memory, limited to 256 KB, and is not written to app storage. This verifies integrity only, not who created the packet. Keep using synthetic data.

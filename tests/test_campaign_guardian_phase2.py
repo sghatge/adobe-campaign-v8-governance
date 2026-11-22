@@ -160,6 +160,13 @@ def test_review_packet_bundles_decision_evidence_without_release_authority():
     assert "campaign" not in packet
 
 
+def test_review_packet_verifier_rejects_missing_digest_metadata():
+    result = verify_review_packet({"decision": "APPROVE"})
+
+    assert result["valid"] is False
+    assert "metadata" in result["reason"].lower()
+
+
 def test_review_packet_digest_detects_content_changes():
     loop_result = {
         "decision": "APPROVE",
