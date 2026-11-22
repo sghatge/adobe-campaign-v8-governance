@@ -1,0 +1,1 @@
+[{"id":"fully-evidenced-synthetic","remove":[],"decision":"APPROVE"},{"id":"missing-consent","remove":["consent_evidence_ref"],"decision":"BLOCK"},{"id":"missing-legal-basis","remove":["legal_basis_evidence_ref"],"decision":"BLOCK"},{"id":"invalid-consent","set":{"invalid_consent_count":1},"decision":"BLOCK"}]

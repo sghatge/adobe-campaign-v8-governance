@@ -8,5 +8,7 @@
   "typology_active": true,
   "proof_approved": true,
   "delivery_status": "not_started",
-  "subject": "Your product update"
+  "subject": "Your product update",
+  "consent_evidence_ref": "SYNTHETIC-CONSENT-001",
+  "legal_basis_evidence_ref": "SYNTHETIC-LEGAL-001"
 }

@@ -301,3 +301,13 @@ GitHub repository
 ```
 
 All examples remain synthetic. No production campaign connection or execution is provided.
+
+## Campaign Guardian Phase 1
+
+The integrated Campaign Guardian adds deterministic, evidence-linked recommendations, a non-compensable compliance evaluator, a five-iteration maximum review loop, and versioned candidate playbooks. Candidate versions remain pending until a human reviewer records an explicit decision in the existing hash-chained audit ledger.
+
+Missing consent evidence or legal-basis evidence returns BLOCK. A quality score is descriptive and cannot change that gate. Guardian recommendations are offline and rule-based; no LLM, paid API, production connector, campaign execution, or deployment is included. Synthetic evidence references are required by the QA engine.
+
+Use the Campaign Guardian section in the existing Streamlit Governance OS to evaluate bundled scenarios, inspect recommendations, create a candidate playbook, and approve or reject it as a human reviewer. Candidate playbook approval does not authorize a campaign release.
+
+See [Campaign Guardian Phase 1 technical notes](docs/CAMPAIGN_GUARDIAN_PHASE_1.md) for the architecture, acceptance criteria, controls, and limitations.
