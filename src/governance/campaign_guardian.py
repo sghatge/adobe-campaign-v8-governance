@@ -325,3 +325,48 @@ def playbook_diff(active, candidate):
         "unchanged_count": len(old_by_key.keys() & new_by_key.keys()),
         "invariants_unchanged": active.get("invariants") == candidate.get("invariants"),
     }
+
+
+def build_review_packet(loop_result, policy_version, audit_integrity):
+    """Create a portable evidence packet without raw campaign input or release authority."""
+    if not isinstance(loop_result, dict):
+        raise ValueError("A bounded Guardian result is required.")
+    final = loop_result.get("final_evaluation")
+    if not isinstance(final, dict):
+        raise ValueError("A final deterministic evaluation is required.")
+    decision = final.get("decision")
+    qa_report = final.get("qa_report")
+    recommendations = final.get("recommendations")
+    iterations = loop_result.get("iterations")
+    if decision not in {"APPROVE", "BLOCK"}:
+        raise ValueError("The deterministic decision is invalid.")
+    if not isinstance(qa_report, dict) or not isinstance(qa_report.get("checks"), list):
+        raise ValueError("The deterministic QA checks are required.")
+    if not isinstance(recommendations, dict) or not isinstance(recommendations.get("recommendations"), list):
+        raise ValueError("Guardian recommendations are required.")
+    if not isinstance(iterations, list) or not iterations:
+        raise ValueError("Improvement iteration evidence is required.")
+    if loop_result.get("decision") != decision:
+        raise ValueError("Loop and evaluator decisions do not match.")
+    if final.get("compliance_block") is not (decision == "BLOCK"):
+        raise ValueError("Compliance state does not match the deterministic decision.")
+    if not isinstance(policy_version, str) or not policy_version.strip():
+        raise ValueError("A policy version is required.")
+    if not isinstance(audit_integrity, dict) or not isinstance(audit_integrity.get("valid"), bool):
+        raise ValueError("Audit integrity evidence is required.")
+
+    return {
+        "packet_version": 1,
+        "generated_at": _utc_now(),
+        "campaign_id": str(final.get("campaign_id", "UNIDENTIFIED")),
+        "decision": decision,
+        "decision_authority": "DETERMINISTIC_EVALUATOR",
+        "quality_score": final.get("quality_score"),
+        "policy_version": policy_version.strip(),
+        "compliance_block": decision == "BLOCK",
+        "checks": copy.deepcopy(qa_report["checks"]),
+        "recommendations": copy.deepcopy(recommendations["recommendations"]),
+        "improvement_iterations": copy.deepcopy(iterations),
+        "audit_integrity": copy.deepcopy(audit_integrity),
+        "release_authorized": False,
+    }

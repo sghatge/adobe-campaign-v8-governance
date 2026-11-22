@@ -31,7 +31,7 @@ from governance.audit import (
 )
 from governance.approval import record_review, read_approvals
 from governance.campaign_guardian import (
-    MAX_ITERATIONS, create_candidate_playbook, read_playbooks,
+    MAX_ITERATIONS, build_review_packet, create_candidate_playbook, read_playbooks,
     reviewer_evidence_improver, playbook_diff, review_candidate_playbook,
     run_bounded_improvement_loop,
 )
@@ -561,6 +561,17 @@ elif page == "Campaign Guardian":
         cols[0].metric("Deterministic decision", final["decision"])
         cols[1].metric("Quality score", f"{final['quality_score']} / 100")
         cols[2].metric("Review cycles", guardian_result["iteration_count"])
+        packet = build_review_packet(
+            guardian_result,
+            policy["policy_version"],
+            verify_chain_report(read_events(AUDIT_PATH)),
+        )
+        st.download_button(
+            "⬇ Download Guardian review packet (JSON)",
+            json.dumps(packet, indent=2),
+            file_name="campaign-guardian-review.json",
+            mime="application/json",
+        )
         st.subheader("Bounded improvement loop")
         st.dataframe(guardian_result["iterations"], use_container_width=True, hide_index=True)
         st.caption("The quality score is descriptive only. Any failed or unknown mandatory invariant keeps the decision at BLOCK.")
