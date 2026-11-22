@@ -6,6 +6,7 @@ import pytest
 from governance.audit import append_event, export_ledger, read_events, verify_chain_report
 from governance.campaign_guardian import (
     INVARIANTS,
+    build_review_packet,
     create_candidate_playbook,
     playbook_diff,
     read_playbooks,
@@ -128,3 +129,31 @@ def test_audit_module_reload_restores_phase2_exports():
         assert callable(audit_module.verify_chain_report)
     finally:
         importlib.reload(audit_module)
+
+
+def test_review_packet_bundles_decision_evidence_without_release_authority():
+    loop_result = {
+        "decision": "BLOCK",
+        "iterations": [{"iteration": 1, "decision": "BLOCK", "quality_score": 80}],
+        "final_evaluation": {
+            "campaign_id": "SYNTHETIC-CAMPAIGN-1",
+            "decision": "BLOCK",
+            "quality_score": 80,
+            "compliance_block": True,
+            "qa_report": {"checks": [{"rule_id": "CON-001", "status": "FAIL"}]},
+            "recommendations": {"recommendations": [{"rule_id": "CON-001", "auto_applied": False}]},
+        },
+    }
+    packet = build_review_packet(
+        loop_result,
+        "1.0.0",
+        {"valid": True, "event_count": 1, "verified_count": 1, "head_hash": "abc"},
+    )
+
+    assert packet["decision"] == "BLOCK"
+    assert packet["compliance_block"] is True
+    assert packet["decision_authority"] == "DETERMINISTIC_EVALUATOR"
+    assert packet["release_authorized"] is False
+    assert packet["checks"] == loop_result["final_evaluation"]["qa_report"]["checks"]
+    assert packet["audit_integrity"]["valid"] is True
+    assert "campaign" not in packet
