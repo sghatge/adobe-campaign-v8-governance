@@ -554,6 +554,28 @@ elif page == "Campaign Guardian":
         except (ValueError, OSError) as exc:
             st.error(str(exc))
 
+    with st.expander("Verify an exported Guardian review packet"):
+        uploaded_packet = st.file_uploader(
+            "Choose a Campaign Guardian review packet JSON file",
+            type=["json"],
+            key="guardian_packet_verify_upload",
+        )
+        if uploaded_packet is not None:
+            if uploaded_packet.size > 256 * 1024:
+                st.error("Review packet exceeds the 256 KB limit.")
+            else:
+                try:
+                    uploaded_payload = json.loads(uploaded_packet.getvalue().decode("utf-8"))
+                    packet_check = verify_review_packet(uploaded_payload)
+                    if packet_check["valid"]:
+                        st.success("Packet integrity is VALID. The SHA-256 digest matches its contents.")
+                    else:
+                        st.error(f"Packet integrity is INVALID. {packet_check['reason']}")
+                    if packet_check.get("digest"):
+                        st.code(packet_check["digest"], language=None)
+                except (UnicodeDecodeError, json.JSONDecodeError):
+                    st.error("The selected file is not valid UTF-8 JSON.")
+
     guardian_result = st.session_state.get("campaign_guardian_result")
     if guardian_result:
         final = guardian_result["final_evaluation"]
