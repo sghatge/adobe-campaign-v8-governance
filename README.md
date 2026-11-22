@@ -324,3 +324,8 @@ See docs/CAMPAIGN_GUARDIAN_PHASE_2.md for the Phase 2 controls and local run ins
 ## Campaign Guardian Phase 3 — portable review packet
 
 The existing Campaign Guardian page can now export one JSON review packet for a synthetic evaluation. It bundles the deterministic decision, policy version, rule checks, recommendations, bounded-loop history, and current audit-chain integrity. The packet omits the raw campaign payload and always records `release_authorized: false`. Exporting is local UI behavior; no paid service, database, or production connector is required.
+
+
+## Campaign Guardian Phase 4 — review packet integrity
+
+Guardian review packets now include a SHA-256 digest over their contents. The app reports whether the exported packet digest matches its contents, and automated coverage confirms that edits are detected. This digest is tamper-evident for accidental or uncoordinated changes; it is not a digital signature and does not prove who created the packet. No paid service or external dependency is added.
