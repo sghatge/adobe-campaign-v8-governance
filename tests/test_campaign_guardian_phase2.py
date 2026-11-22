@@ -1,3 +1,4 @@
+import importlib
 import json
 
 import pytest
@@ -115,3 +116,15 @@ def test_audit_report_detects_reordered_events(tmp_path):
 
     assert report["valid"] is False
     assert report["first_invalid_sequence"] == 1
+
+
+def test_audit_module_reload_restores_phase2_exports():
+    import governance.audit as audit_module
+
+    try:
+        del audit_module.export_ledger
+        importlib.reload(audit_module)
+        assert callable(audit_module.export_ledger)
+        assert callable(audit_module.verify_chain_report)
+    finally:
+        importlib.reload(audit_module)
