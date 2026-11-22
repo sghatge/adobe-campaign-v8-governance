@@ -16,11 +16,13 @@ from governance.portfolio import (
     append_history, assess_portfolio, latest_batch,
     load_portfolio, summarize_portfolio,
 )
-from governance.audit import append_event, read_events, verify_chain
+from governance.audit import (
+    append_event, export_ledger, read_events, verify_chain, verify_chain_report,
+)
 from governance.approval import record_review, read_approvals
 from governance.campaign_guardian import (
     MAX_ITERATIONS, create_candidate_playbook, read_playbooks,
-    reviewer_evidence_improver, review_candidate_playbook,
+    reviewer_evidence_improver, playbook_diff, review_candidate_playbook,
     run_bounded_improvement_loop,
 )
 
@@ -462,33 +464,39 @@ elif page == "Approval Centre":
             st.dataframe(approvals, use_container_width=True, hide_index=True)
 
 elif page == "Audit Ledger":
-    st.caption("Assessment and human-review event history")
     events = read_events(AUDIT_PATH)
-    intact = verify_chain(events)
+    integrity = verify_chain_report(events)
     cols = st.columns(3)
-    cols[0].metric("Audit events", len(events))
-    cols[1].metric("Chain integrity", "VALID" if intact else "INVALID")
-    cols[2].metric("Latest sequence", events[-1]["sequence"] if events else 0)
-    if intact:
-        st.success("Hash-chain verification passed.")
+    cols[0].metric("Ledger integrity", "VALID" if integrity["valid"] else "INVALID")
+    cols[1].metric("Verified events", integrity["verified_count"])
+    cols[2].metric("Latest sequence", integrity["event_count"])
+    if integrity["valid"]:
+        st.success(f"Hash chain verified. Head hash: {integrity['head_hash']}")
     else:
-        st.error("Audit integrity failure. New events are refused.")
+        st.error(
+            f"Integrity check failed at sequence {integrity['first_invalid_sequence']}: "
+            f"{integrity['reason']} Later appends remain blocked."
+        )
     if events:
         st.dataframe(
-            [{"Sequence": e["sequence"], "Timestamp": e["timestamp"],
-              "Event": e["event_type"], "Campaign": e["campaign_id"],
-              "Actor": e["actor"], "Hash": e["event_hash"][:16] + "..."}
-             for e in reversed(events)],
+            [{
+                "Sequence": event.get("sequence"),
+                "Timestamp": event.get("timestamp"),
+                "Event": event.get("event_type"),
+                "Campaign": event.get("campaign_id"),
+                "Actor": event.get("actor"),
+                "Hash": event.get("event_hash", "")[:16] + "…",
+            } for event in reversed(events)],
             use_container_width=True, hide_index=True,
         )
-        st.download_button(
-            "⬇ Download audit ledger JSON",
-            json.dumps(events, indent=2),
-            "governance-audit-ledger.json",
-            "application/json",
-        )
     else:
-        st.info("No audit events recorded yet.")
+        st.info("No audit events recorded yet. The empty ledger is valid.")
+    st.download_button(
+        "⬇ Download verified audit ledger JSON",
+        json.dumps(export_ledger(AUDIT_PATH), indent=2),
+        file_name="governance-audit-ledger.json",
+        mime="application/json",
+    )
 
 elif page == "Campaign Guardian":
     st.caption("Evidence-led recommendations · deterministic compliance gate · human-controlled playbooks")
@@ -563,6 +571,28 @@ elif page == "Campaign Guardian":
                     st.error(str(exc))
             if pending:
                 candidate_version = pending[0]["version"]
+                candidate = pending[0]
+                active_playbook = next(
+                    version for version in playbooks["versions"]
+                    if version.get("version") == playbooks["active_version"]
+                )
+                diff = playbook_diff(active_playbook, candidate)
+                st.subheader("Changes from active playbook")
+                st.caption(f"{diff['from_version']} → {diff['to_version']}")
+                if diff["invariants_unchanged"]:
+                    st.success("Mandatory invariants are unchanged.")
+                else:
+                    st.warning("Invariant metadata differs; mandatory controls are still checked before review.")
+                diff_cols = st.columns(3)
+                diff_cols[0].metric("Added recommendations", len(diff["added"]))
+                diff_cols[1].metric("Removed recommendations", len(diff["removed"]))
+                diff_cols[2].metric("Unchanged recommendations", diff["unchanged_count"])
+                if diff["added"]:
+                    with st.expander("Show added recommendations"):
+                        st.json(diff["added"])
+                if diff["removed"]:
+                    with st.expander("Show removed recommendations"):
+                        st.json(diff["removed"])
                 st.subheader(f"Review candidate playbook {candidate_version}")
                 with st.form("campaign_guardian_playbook_review"):
                     reviewer = st.text_input("Human reviewer identity")
