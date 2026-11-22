@@ -319,3 +319,8 @@ Phase 2 adds an operator-readable audit integrity report and a JSON export that 
 This remains a free, synthetic local prototype. No paid APIs, database, authentication provider, external LLM, live Adobe/Salesforce connection, campaign execution, or new deployment behavior is included. Local JSON persistence can be lost on a hosted app restart. Hash chaining is tamper-evident but does not detect a full rewrite and rehash of the ledger; the export is not a signature or immutable archive. Reviewer identity is still self-entered.
 
 See docs/CAMPAIGN_GUARDIAN_PHASE_2.md for the Phase 2 controls and local run instructions.
+
+
+## Campaign Guardian Phase 3 — portable review packet
+
+The existing Campaign Guardian page can now export one JSON review packet for a synthetic evaluation. It bundles the deterministic decision, policy version, rule checks, recommendations, bounded-loop history, and current audit-chain integrity. The packet omits the raw campaign payload and always records `release_authorized: false`. Exporting is local UI behavior; no paid service, database, or production connector is required.
