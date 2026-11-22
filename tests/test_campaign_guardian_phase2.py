@@ -7,6 +7,7 @@ from governance.audit import append_event, export_ledger, read_events, verify_ch
 from governance.campaign_guardian import (
     INVARIANTS,
     build_review_packet,
+    verify_review_packet,
     create_candidate_playbook,
     playbook_diff,
     read_playbooks,
@@ -157,3 +158,28 @@ def test_review_packet_bundles_decision_evidence_without_release_authority():
     assert packet["checks"] == loop_result["final_evaluation"]["qa_report"]["checks"]
     assert packet["audit_integrity"]["valid"] is True
     assert "campaign" not in packet
+
+
+def test_review_packet_digest_detects_content_changes():
+    loop_result = {
+        "decision": "APPROVE",
+        "iterations": [{"iteration": 1, "decision": "APPROVE", "quality_score": 100}],
+        "final_evaluation": {
+            "campaign_id": "SYNTHETIC-CAMPAIGN-2",
+            "decision": "APPROVE",
+            "quality_score": 100,
+            "compliance_block": False,
+            "qa_report": {"checks": [{"rule_id": "CON-001", "status": "PASS"}]},
+            "recommendations": {"recommendations": []},
+        },
+    }
+    integrity = {"valid": True, "event_count": 0, "verified_count": 0, "head_hash": "0" * 64}
+    packet = build_review_packet(loop_result, "1.0.0", integrity)
+
+    assert packet["integrity"]["algorithm"] == "SHA-256"
+    assert verify_review_packet(packet)["valid"] is True
+
+    packet["quality_score"] = 1
+    result = verify_review_packet(packet)
+    assert result["valid"] is False
+    assert "does not match" in result["reason"]
