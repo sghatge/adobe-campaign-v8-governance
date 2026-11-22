@@ -311,3 +311,11 @@ Missing consent evidence or legal-basis evidence returns BLOCK. A quality score 
 Use the Campaign Guardian section in the existing Streamlit Governance OS to evaluate bundled scenarios, inspect recommendations, create a candidate playbook, and approve or reject it as a human reviewer. Candidate playbook approval does not authorize a campaign release.
 
 See [Campaign Guardian Phase 1 technical notes](docs/CAMPAIGN_GUARDIAN_PHASE_1.md) for the architecture, acceptance criteria, controls, and limitations.
+
+## Campaign Guardian Phase 2 — free governance hardening
+
+Phase 2 adds an operator-readable audit integrity report and a JSON export that includes the verification result. Before a human reviews a candidate playbook, the existing Governance OS shows recommendation additions/removals and whether invariant metadata matches the active version.
+
+This remains a free, synthetic local prototype. No paid APIs, database, authentication provider, external LLM, live Adobe/Salesforce connection, campaign execution, or new deployment behavior is included. Local JSON persistence can be lost on a hosted app restart. Hash chaining is tamper-evident but does not detect a full rewrite and rehash of the ledger; the export is not a signature or immutable archive. Reviewer identity is still self-entered.
+
+See docs/CAMPAIGN_GUARDIAN_PHASE_2.md for the Phase 2 controls and local run instructions.

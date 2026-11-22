@@ -293,3 +293,35 @@ def review_candidate_playbook(path, audit_path, version, reviewer, action, ratio
     })
     _write_json_atomic(path, store)
     return copy.deepcopy(candidate)
+
+
+def playbook_diff(active, candidate):
+    """Summarize recommendation changes between two approved candidates.
+
+    This is a presentation helper only; approval and invariant checks remain
+    in review_candidate_playbook.
+    """
+    if not isinstance(active, dict) or not isinstance(candidate, dict):
+        raise ValueError("Both playbook versions must be objects.")
+    assert_invariants(active.get("invariants", {}))
+    assert_invariants(candidate.get("invariants", {}))
+    old = active.get("recommendations", [])
+    new = candidate.get("recommendations", [])
+    if not isinstance(old, list) or not isinstance(new, list):
+        raise ValueError("Playbook recommendations must be lists.")
+    def key(item):
+        if not isinstance(item, dict):
+            raise ValueError("Playbook recommendations must be objects.")
+        return json.dumps(item, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+    old_by_key = {key(item): item for item in old}
+    new_by_key = {key(item): item for item in new}
+    added = [new_by_key[k] for k in sorted(new_by_key.keys() - old_by_key.keys())]
+    removed = [old_by_key[k] for k in sorted(old_by_key.keys() - new_by_key.keys())]
+    return {
+        "from_version": active.get("version"),
+        "to_version": candidate.get("version"),
+        "added": added,
+        "removed": removed,
+        "unchanged_count": len(old_by_key.keys() & new_by_key.keys()),
+        "invariants_unchanged": active.get("invariants") == candidate.get("invariants"),
+    }

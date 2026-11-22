@@ -92,3 +92,54 @@ def append_event(path, event_type, campaign_id, actor, details):
     events.append(payload)
     _atomic_write(path, events)
     return payload
+
+
+def verify_chain_report(events):
+    """Return operator-readable integrity diagnostics for a hash chain.
+
+    Hash chaining detects edits, deletions, insertions, and reordering unless
+    an attacker rewrites the entire chain. It is tamper-evident, not signed.
+    """
+    if not isinstance(events, list):
+        return {"valid": False, "event_count": 0, "verified_count": 0,
+                "head_hash": GENESIS, "first_invalid_sequence": None,
+                "reason": "Audit ledger must be a JSON array."}
+    previous = GENESIS
+    for index, event in enumerate(events):
+        sequence = index + 1
+        if not isinstance(event, dict):
+            reason = "Audit event is not an object."
+        elif event.get("sequence") != sequence:
+            reason = f"Expected sequence {sequence}; found {event.get('sequence')!r}."
+        elif event.get("previous_hash") != previous:
+            reason = "Previous hash does not match the prior event."
+        else:
+            supplied_hash = event.get("event_hash")
+            payload = {key: value for key, value in event.items() if key != "event_hash"}
+            if supplied_hash != _digest(payload):
+                reason = "Event hash does not match its contents."
+            else:
+                previous = supplied_hash
+                continue
+        return {"valid": False, "event_count": len(events),
+                "verified_count": index, "head_hash": previous,
+                "first_invalid_sequence": sequence, "reason": reason}
+    return {"valid": True, "event_count": len(events),
+            "verified_count": len(events), "head_hash": previous,
+            "first_invalid_sequence": None, "reason": "Chain is valid."}
+
+
+def verify_chain(events):
+    """Preserve the boolean API while sharing the detailed verifier."""
+    return verify_chain_report(events)["valid"]
+
+
+def export_ledger(path):
+    """Return a JSON-serializable evidence export with its verification result."""
+    events = read_events(path)
+    return {
+        "export_version": 1,
+        "exported_at": datetime.now(timezone.utc).isoformat(),
+        "integrity": verify_chain_report(events),
+        "events": events,
+    }
