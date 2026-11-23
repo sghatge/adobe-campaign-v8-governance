@@ -61,17 +61,38 @@ li{margin:8px 0}
 border:1px solid #31517a;border-radius:15px;padding:28px}
 footer{padding:30px 0 45px;color:var(--muted);font-size:13px;
 border-top:1px solid var(--line)}
+.dgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.dgrid .card{display:flex;flex-direction:column}
+.dgrid .card p:last-child{margin-top:auto}
+.tagline{font-size:11px;letter-spacing:1px;color:var(--green);font-weight:800;margin:0 0 10px}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.links .btn{padding:10px 14px;font-size:13px}
+img,svg{max-width:100%;height:auto}
+.btn{min-height:44px;text-align:center}
+.navlinks a{white-space:nowrap}
+@media(max-width:1000px){
+ .dgrid{grid-template-columns:repeat(2,1fr)}
+}
 @media(max-width:800px){
+ nav.wrap{height:auto;flex-wrap:wrap;padding:14px 0 8px;gap:8px}
+ .navlinks{width:100%;gap:18px;font-size:13px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:6px 0 10px;scrollbar-width:thin}
  .grid{grid-template-columns:repeat(2,1fr)}
  .architecture{grid-template-columns:repeat(2,1fr)}
  .split{grid-template-columns:1fr}
- .navlinks{gap:12px;font-size:12px}
+ .hero{padding:64px 0 50px}
+ .section{padding:48px 0}
+ h2{font-size:26px}
 }
-@media(max-width:520px){
- .grid{grid-template-columns:1fr}
- .navlinks a:nth-child(2){display:none}
- .hero{padding:70px 0 55px}
+@media(max-width:560px){
+ .grid,.dgrid{grid-template-columns:1fr}
+ .architecture{grid-template-columns:1fr}
+ .hero{padding:44px 0 40px}
  h1{letter-spacing:-1px}
+ .lead{font-size:17px}
+ .actions .btn,.links .btn,.card p .btn{width:100%;display:block}
+ .actions{gap:10px}
+ .card{padding:18px}
+ footer{font-size:12px}
 }
 </style>
 </head>
@@ -82,6 +103,7 @@ border-top:1px solid var(--line)}
     <a href="#platform">Platform</a>
     <a href="projects.html">Showcase</a>
     <a href="#projects">Projects</a>
+    <a href="#demos">Live Demos</a>
     <a href="portfolio.html">Project Index</a>
     <a href="architecture-guide.html">Start Here</a>
     <a href="#architecture">Architecture</a>
@@ -177,6 +199,70 @@ border-top:1px solid var(--line)}
 </section>
 
 
+
+<section class="section" id="demos">
+<div class="wrap">
+  <div class="eyebrow">Live demos</div>
+  <h2>Every interactive demo, in one place.</h2>
+  <p class="sub">Hands-on demonstrations from the public repositories. All use synthetic data. Streamlit-hosted demos may take a moment to wake after inactivity. The <a href="portfolio.html" style="text-decoration:underline">full project index</a> also covers repositories without a hosted demo, including the 28-episode Safe to Send series.</p>
+  <div class="dgrid">
+    <article class="card">
+      <div class="number">GOVERNANCE ENGINEERING</div>
+      <h3>Governance OS</h3>
+      <p>Deterministic campaign QA with APPROVE / BLOCK outcomes, human review and a hash-chained audit ledger.</p>
+      <div class="links"><a class="btn primary" href="https://adobe-campaign-v8-governance-3rzwjb2pbqqftpm3fecxzd.streamlit.app/" target="_blank" rel="noopener">Launch demo ↗</a><a class="btn secondary" href="https://github.com/sghatge/adobe-campaign-v8-governance" target="_blank" rel="noopener">Source ↗</a></div>
+    </article>
+    <article class="card">
+      <div class="number">POLICY GATE</div>
+      <h3>ACC Agent Gate</h3>
+      <p>Governance gate between an AI agent and Adobe Campaign: policy rules, pre-send QA, human approvals and a tamper-evident audit log, shown on a synthetic Black Friday scenario across 8 EU markets.</p>
+      <div class="links"><a class="btn primary" href="https://sghatge.github.io/acc-agent-gate/" target="_blank" rel="noopener">Open demo ↗</a><a class="btn secondary" href="https://github.com/sghatge/acc-agent-gate" target="_blank" rel="noopener">Source ↗</a></div>
+    </article>
+    <article class="card">
+      <div class="number">PRE-FLIGHT QA</div>
+      <h3>Campaign v8 Pre-flight Agent</h3>
+      <p>Pre-flight assessment demo for Adobe Campaign v8 deliveries, run on synthetic data.</p>
+      <div class="links"><a class="btn primary" href="https://sghatge.github.io/campaign-v8-preflight-agent/" target="_blank" rel="noopener">Open demo ↗</a><a class="btn secondary" href="https://github.com/sghatge/campaign-v8-preflight-agent" target="_blank" rel="noopener">Source ↗</a></div>
+    </article>
+    <article class="card">
+      <div class="number">AGENT HANDOFF CONTROL</div>
+      <h3>Handoff Gate</h3>
+      <p>Deterministic GO / HOLD / BLOCK checkpoint with evidence requirements and an audit fingerprint.</p>
+      <div class="links"><a class="btn primary" href="https://sghatge.github.io/handoff-gate/demo/" target="_blank" rel="noopener">Interactive demo ↗</a><a class="btn secondary" href="https://sghatge.github.io/handoff-gate/" target="_blank" rel="noopener">Project site ↗</a><a class="btn secondary" href="https://github.com/sghatge/handoff-gate" target="_blank" rel="noopener">Source ↗</a></div>
+    </article>
+    <article class="card">
+      <div class="number">AI OPERATING MODEL</div>
+      <h3>OPSFORGE</h3>
+      <p>Local-first governed operations platform with defined agents, human approval gates, evidence and an audit trail.</p>
+      <div class="links"><a class="btn primary" href="https://sghatge.github.io/opsforge/" target="_blank" rel="noopener">Project walkthrough ↗</a><a class="btn secondary" href="https://github.com/sghatge/opsforge" target="_blank" rel="noopener">Source ↗</a></div>
+    </article>
+    <article class="card">
+      <div class="number">READINESS ASSESSMENT</div>
+      <h3>AI Readiness Calculator</h3>
+      <p>Interactive AI adoption assessment with readiness scoring, team workshop and action planning.</p>
+      <div class="links"><a class="btn primary" href="https://sghatge.github.io/ai-readiness-calculator/" target="_blank" rel="noopener">Open calculator ↗</a><a class="btn secondary" href="https://github.com/sghatge/ai-readiness-calculator" target="_blank" rel="noopener">Source ↗</a></div>
+    </article>
+    <article class="card">
+      <div class="number">CAMPAIGN DESIGN</div>
+      <h3>Campaign Frameworks Atlas</h3>
+      <p>Ten Adobe Campaign Classic v8 solution patterns with architecture diagrams, workflow designs, setup screens and simulated test results.</p>
+      <div class="links"><a class="btn primary" href="https://sghatge.github.io/campaign-frameworks-atlas/" target="_blank" rel="noopener">Open atlas ↗</a><a class="btn secondary" href="https://github.com/sghatge/campaign-frameworks-atlas" target="_blank" rel="noopener">Source ↗</a></div>
+    </article>
+    <article class="card">
+      <div class="number">DIGITAL MARKETING AI</div>
+      <h3>Digital Marketing AI Agents</h3>
+      <p>Marketing workflow prototype spanning strategy, content, campaign QA and performance calculations.</p>
+      <div class="links"><a class="btn primary" href="https://sghatge-digital-marketing-ai-agents-app-5uhltb.streamlit.app/" target="_blank" rel="noopener">Launch demo ↗</a><a class="btn secondary" href="https://github.com/sghatge/digital-marketing-ai-agents" target="_blank" rel="noopener">Source ↗</a></div>
+    </article>
+    <article class="card">
+      <div class="number">LOCAL-FIRST ANALYTICS</div>
+      <h3>Aegis Studio</h3>
+      <p>Local-first tool for campaign analytics, document search and operations, with an interactive demo on synthetic data.</p>
+      <div class="links"><a class="btn primary" href="https://sghatge.github.io/aegis-studio/" target="_blank" rel="noopener">Open demo ↗</a><a class="btn secondary" href="https://github.com/sghatge/aegis-studio" target="_blank" rel="noopener">Source ↗</a></div>
+    </article>
+  </div>
+</div>
+</section>
 
 <section class="section" id="quickstart"><div class="wrap"><div class="eyebrow">First-minute demo</div><h2>See both decision paths quickly.</h2><p class="sub">The live app includes bundled passing and blocking examples. You can review an approval path and its recorded rationale without preparing an upload.</p><div class="split"><article class="card"><h3>Show a block</h3><p>Select <b>Campaign QA → Bundled example → Blocking example</b>, then run pre-flight. Mandatory FAIL or UNKNOWN stays blocked.</p></article><article class="card"><h3>Show an accountable approval</h3><p>Run the bundled Passing example, open Human Review, and record an APPROVE action with a demo reviewer and rationale. Review actions are recorded locally for the demonstration.</p></article></div><div class="actions"><a class="btn primary" href="https://adobe-campaign-v8-governance-3rzwjb2pbqqftpm3fecxzd.streamlit.app/" target="_blank" rel="noopener">Open Governance OS ↗</a><a class="btn secondary" href="case-study.html">View synthetic scenarios ↗</a></div><p style="color:var(--muted);font-size:13px">Streamlit may take time to wake after inactivity. These examples are synthetic and do not execute campaigns.</p></div></section>
 
