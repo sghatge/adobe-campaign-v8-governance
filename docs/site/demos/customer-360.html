@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1220"><meta name="description" content="Synthetic identity-resolution demo: unify records, roll up consent, check marketing eligibility.">
+<title>Customer 360 Intelligence | Governance OS demos</title><link rel="stylesheet" href="demo.css"></head><body>
+<header class="top"><div class="wrap"><a class="brand" href="../index.html">GOVERNANCE <span>OS</span></a>
+<nav class="crumbs"><a href="../index.html#demos">← All live demos</a><a href="../portfolio.html">Project index</a><a href="https://github.com/sghatge" target="_blank" rel="noopener">GitHub</a></nav></div></header>
+<main><section class="wrap hero"><div class="eyebrow">Customer 360 Intelligence</div><h1>One customer, four systems, one governed profile.</h1><p class="lead">A small demonstration of deterministic identity resolution with a consent roll-up.</p><div class="banner">Prototype built for this portfolio. The <a href="https://github.com/sghatge/customer-360-intelligence" target="_blank" rel="noopener">customer-360-intelligence repository</a> currently contains only a README, so this demo is new and is not a port of repository code. All records are synthetic.</div></section>
+<section class="wrap section"><h2>1 · Four systems, one customer, many spellings</h2><p class="muted">Synthetic records from four source systems. Press resolve to link them with deterministic rules.</p>
+<div class="tw"><table><thead><tr><th>ID</th><th>Source</th><th>Name</th><th>Email</th><th>Phone</th><th>Postcode</th><th>Marketing consent</th></tr></thead><tbody id="src"></tbody></table></div>
+<div class="row"><button class="primary" id="go">Resolve identities</button><button id="rs">Reset</button></div></section>
+<section class="wrap section"><h2>2 · Unified profiles</h2><div id="res" class="grid"><p class="muted">Not resolved yet.</p></div></section>
+<section class="wrap section"><h2>How the rules work</h2><div class="two"><div class="card"><h3>Match rules, strongest first</h3><ol><li>Same normalised email (lower-case, plus-tag and Gmail dots removed): <b>high</b> confidence.</li><li>Same phone number after stripping spaces and country prefix: <b>high</b>.</li><li>Same postcode and a name that differs by at most one edit or an initial: <b>medium</b>, flagged for human review.</li></ol></div>
+<div class="card"><h3>Governance rules</h3><ul><li>Consent rolls up to the <b>most restrictive</b> value across linked records.</li><li>A medium-confidence link never merges consent or contact data automatically.</li><li>Every link records the rule that created it.</li></ul></div></div></section></main>
+<footer><div class="wrap">Independent engineering portfolio · synthetic data only · runs entirely in your browser, nothing is sent anywhere.</div></footer>
+<script>
+const R=[['CRM-101','CRM','Anna Kovač','anna.kovac@example.com','+385 91 234 5678','10000','yes'],['WEB-554','Web analytics','Ana Kovac','Anna.Kovac+promo@example.com','','10000','unknown'],['EML-883','Email platform','A. Kovač','annakovac@example.com','0912345678','10000','no'],['SUP-312','Support desk','Anna Kovač','','091 234 5678','10000','yes'],
+['CRM-102','CRM','Marko Horvat','marko.h@example.com','+385 98 111 2222','21000','yes'],['WEB-560','Web analytics','Marko Horvat','Marko.H@Example.com','','21000','yes'],['EML-901','Email platform','Marta Novak','marta.n@example.com','+386 40 555 666','1000','yes'],['SUP-340','Support desk','Marta Novak','','040555666','1000','no']];
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+$('#src').innerHTML=R.map(r=>`<tr>${r.map((c,i)=>`<td>${i==6?`<span class="pill ${c=='yes'?'ok':c=='no'?'bad':'warn'}">${c}</span>`:esc(c||'—')}</td>`).join('')}</tr>`).join('');
+const ne=e=>{if(!e)return'';let[u,d]=e.toLowerCase().split('@');u=u.split('+')[0];if(d=='gmail.com')u=u.replace(/\./g,'');return u.replace(/\./g,'')+'@'+d};
+const np=p=>{let x=(p||'').replace(/\D/g,'');x=x.replace(/^(00)?(385|386)/,'').replace(/^0/,'');return x};
+const norm=s=>s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z ]/g,'').trim();
+function close(a,b){a=norm(a);b=norm(b);if(a==b)return true;const pa=a.split(' '),pb=b.split(' ');if(pa[pa.length-1]!=pb[pa.length?pb.length-1:0])return false;const i=x=>x[0];return pa[0][0]==pb[0][0]&&(pa[0].length==1||pb[0].length==1||Math.abs(pa[0].length-pb[0].length)<=1&&(pa[0].startsWith(pb[0].slice(0,-1))||pb[0].startsWith(pa[0].slice(0,-1))))}
+$('#go').onclick=()=>{const p=R.map((_,i)=>i),f=i=>p[i]==i?i:(p[i]=f(p[i]));const links=[];
+for(let i=0;i<R.length;i++)for(let j=i+1;j<R.length;j++){const a=R[i],b=R[j];let rule=null,conf=null;
+if(ne(a[3])&&ne(a[3])==ne(b[3])){rule='email';conf='high'}else if(np(a[4])&&np(a[4])==np(b[4])){rule='phone';conf='high'}else if(a[5]==b[5]&&close(a[2],b[2])){rule='postcode+name';conf='medium'}
+if(rule){links.push([a[0],b[0],rule,conf]);if(conf=='high')p[f(j)]=f(i)}}
+const groups={};R.forEach((r,i)=>(groups[f(i)]??=[]).push(r));const out=[];
+for(const g of Object.values(groups)){const ids=g.map(r=>r[0]),cons=g.map(r=>r[6]),cs=cons.includes('no')?'no':cons.includes('unknown')?'unknown':'yes',lk=links.filter(l=>ids.includes(l[0])&&ids.includes(l[1])&&l[3]=='high'),
+med=links.filter(l=>l[3]=='medium'&&(ids.includes(l[0])!=ids.includes(l[1])));
+out.push(`<article class="card"><div class="eyebrow">${g.length} linked records</div><h3>${esc(g[0][2])}</h3><p class="muted" style="font-size:13px">${ids.join(' · ')}</p>
+<p>Consent: <span class="pill ${cs=='yes'?'ok':cs=='no'?'bad':'warn'}">${cs}</span> <span class="muted" style="font-size:13px">(most restrictive of ${cons.join(', ')})</span></p>
+<p style="font-size:13px" class="muted">${lk.map(l=>`${l[0]}↔${l[1]}: ${l[2]} (${l[3]})`).join('<br>')||'Single record'}</p>
+<p><span class="pill ${cs=='yes'?'ok':'bad'}">${cs=='yes'?'eligible for marketing':'not eligible for marketing'}</span></p>${med.length?`<p class="pill warn">Review: possible link to ${med.map(l=>l[0]+'/'+l[1]).join(', ')}</p>`:''}</article>`)}
+$('#res').innerHTML=out.join('')};
+$('#rs').onclick=()=>{$('#res').innerHTML='<p class="muted">Not resolved yet.</p>'};
+</script></body></html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1220"><meta name="description" content="Three runnable in-browser demos from the Email in 2030 showcase.">
+<title>Email in 2030 | Governance OS demos</title><link rel="stylesheet" href="demo.css"></head><body>
+<header class="top"><div class="wrap"><a class="brand" href="../index.html">GOVERNANCE <span>OS</span></a>
+<nav class="crumbs"><a href="../index.html#demos">← All live demos</a><a href="../portfolio.html">Project index</a><a href="https://github.com/sghatge" target="_blank" rel="noopener">GitHub</a></nav></div></header>
+<main><section class="wrap hero"><div class="eyebrow">Email in 2030 · 5-post series</div><h1>Where email operations are heading by 2030.</h1><p class="lead">Three of the five demos run live below. The other two link to their own live demos.</p></section>
+<section class="wrap section"><div class="tabs" role="tablist">
+<button role="tab" aria-selected="true" data-t="e1">1 · Prompt to journey</button><button role="tab" aria-selected="false" data-t="e4">4 · AI-readable email</button><button role="tab" aria-selected="false" data-t="e5">5 · Self-optimizing test loop</button></div>
+
+<div id="e1" class="panel card"><h3>Plain-English brief → journey spec</h3><p class="muted">A rule-based stand-in (no LLM). It also tells you what is missing.</p>
+<label for="b1">Brief</label><textarea id="b1">Welcome email 1 day after signup, then reminder after 3 days if not opened</textarea>
+<div class="row"><button class="primary" id="g1">Build spec</button></div><div id="o1"></div></div>
+
+<div id="e4" class="panel card hidden"><h3>How readable is this email to an AI inbox?</h3><p class="muted">A heuristic score with the author's own rules, not an industry standard.</p>
+<div class="row"><button id="s4a">Sample: clear text</button><button id="s4b">Sample: vague</button><button id="s4c">Sample: image only</button></div>
+<label for="h4">Email HTML</label><textarea id="h4"></textarea><div class="row"><button class="primary" id="g4">Score it</button></div><div id="o4"></div></div>
+
+<div id="e5" class="panel card hidden"><h3>Pick a winner only when the data supports it</h3>
+<div class="two"><div><label>Variant A · sends</label><input type="number" id="as" value="2000"><label>Variant A · conversions</label><input type="number" id="ac" value="40"></div>
+<div><label>Variant B · sends</label><input type="number" id="bs" value="2000"><label>Variant B · conversions</label><input type="number" id="bc" value="90"></div></div>
+<label>Minimum sample per variant</label><input type="number" id="ms" value="500"><div class="row"><button class="primary" id="g5">Decide</button></div><div id="o5"></div></div></section>
+<section class="wrap section"><h2>The other two posts</h2><div class="two">
+<article class="card"><h3>2 · Agents propose, a gate decides</h3><p class="muted">Every tool call checked against a written policy and logged in a hash-chained audit log.</p><div class="row"><a class="btn primary" href="https://sghatge.github.io/acc-agent-gate/" target="_blank" rel="noopener">Open ACC Agent Gate ↗</a></div></article>
+<article class="card"><h3>3 · QA moves before the send</h3><p class="muted">Eight deterministic checks; humans sign off any override.</p><div class="row"><a class="btn primary" href="https://sghatge.github.io/campaign-v8-preflight-agent/" target="_blank" rel="noopener">Open Pre-flight Agent ↗</a></div></article></div>
+<div class="row"><a class="btn" href="https://github.com/sghatge/email-2030-showcase" target="_blank" rel="noopener">View repository ↗</a></div></section></main>
+<footer><div class="wrap">Independent engineering portfolio · synthetic data only · runs entirely in your browser, nothing is sent anywhere.</div></footer>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+$$('.tabs button').forEach(b=>b.onclick=()=>{$$('.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));$$('.panel').forEach(p=>p.classList.toggle('hidden',p.id!==b.dataset.t))});
+function spec(brief){const t=(brief||'').trim(),s={status:'ok',audience:null,channel:null,trigger:null,steps:[],open_questions:[]};
+if(!t){s.status='needs_detail';s.open_questions.push('Describe the audience, channel and timing.');return s}
+const low=t.toLowerCase();for(const c of ['email','sms','push','whatsapp'])if(low.includes(c)){s.channel=c;break}
+const m=low.match(/after (\w+)/);if(m)s.trigger=m[1];
+for(const p of t.split(/,\s*then\s+|\bthen\b/).map(x=>x.trim()).filter(Boolean)){let l=p;const d=p.toLowerCase().match(/(\d+)\s*day/);if(d)l+=` (wait ${d[1]} day(s))`;if(p.toLowerCase().includes('if not opened'))l+=' [condition: not opened]';s.steps.push(l)}
+if(!s.channel)s.open_questions.push('Which channel?');if(!/signup|purchase|cart/.test(low))s.open_questions.push('What event starts the journey?');
+if(!s.channel&&!s.steps.length)s.status='needs_detail';return s}
+$('#g1').onclick=()=>{const s=spec($('#b1').value);$('#o1').innerHTML=`<p><span class="pill ${s.status=='ok'?'ok':'warn'}">${s.status}</span> channel: <b>${s.channel||'?'}</b> · trigger: <b>${s.trigger||'?'}</b></p><ol>${s.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>${s.open_questions.length?'<p class="muted">Open questions:</p><ul>'+s.open_questions.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>':''}<details><summary class="muted">Raw JSON</summary><pre class="mono">${esc(JSON.stringify(s,null,2))}</pre></details>`};$('#g1').click();
+const SM={a:'<html><body><h1>Your order has shipped</h1><p>Your order 1042 left our warehouse today and arrives Friday.</p><p><a href="https://example.test/track">Track your order</a></p></body></html>',b:'<html><body><p>Big sale this week with many deals for everyone who reads this message today.</p><p><a href="https://example.test">click here</a></p><img src="a.png"></body></html>',c:'<html><body><img src="banner.png"></body></html>'};
+function score(h){if(!h.trim())return{score:0,reasons:['Empty email: nothing for an AI inbox to read.']};
+const d=new DOMParser().parseFromString(h,'text/html');d.querySelectorAll('script,style').forEach(e=>e.remove());
+const words=(d.body.textContent||'').split(/\s+/).filter(Boolean).length,imgs=[...d.querySelectorAll('img')],noAlt=imgs.filter(i=>!(i.getAttribute('alt')||'').trim()).length,heads=d.querySelectorAll('h1,h2,h3').length,links=[...d.querySelectorAll('a')],bad=links.filter(a=>['','click here','here','link','read more'].includes(a.textContent.trim().toLowerCase())).length;
+let sc=100,r=[];if(words<10){sc-=70;r.push('Almost no readable text; content is mostly image.')}if(imgs.length&&words<10)r.push('Image-only content cannot be summarized by an AI inbox.');
+if(!heads){sc-=15;r.push('No heading to anchor the summary.')}if(noAlt){sc-=10;r.push(`${noAlt} image(s) without alt text.`)}if(bad){sc-=10;r.push("Vague link text (e.g. 'click here').")}if(!links.length){sc-=5;r.push('No clear call to action link.')}
+return{score:Math.max(sc,0),reasons:r}}
+function g4(){const r=score($('#h4').value);$('#o4').innerHTML=`<div class="big">${r.score}/100 <span class="pill ${r.score>=80?'ok':r.score>=50?'warn':'bad'}">${r.score>=80?'readable':r.score>=50?'partly readable':'poor'}</span></div><ul>${r.reasons.map(x=>`<li>${esc(x)}</li>`).join('')||'<li>No issues found by these rules.</li>'}</ul>`}
+$('#g4').onclick=g4;[['a','a'],['b','b'],['c','c']].forEach(([i,k])=>$('#s4'+i).onclick=()=>{$('#h4').value=SM[k];g4()});$('#h4').value=SM.a;g4();
+function erfc(x){const z=Math.abs(x),t=1/(1+.5*z),r=t*Math.exp(-z*z-1.26551223+t*(1.00002368+t*(.37409196+t*(.09678418+t*(-.18628806+t*(.27886807+t*(-1.13520398+t*(1.48851587+t*(-.82215223+t*.17087277)))))))));return x>=0?r:2-r}
+$('#g5').onclick=()=>{const V={A:[+$('#as').value,+$('#ac').value],B:[+$('#bs').value,+$('#bc').value]},ms=+$('#ms').value;let res;
+for(const n in V)if(V[n][0]<ms){res=['not_enough_data',`${n} has ${V[n][0]} sends; minimum is ${ms}.`];break}
+if(!res&&V.A[1]+V.B[1]===0)res=['not_enough_data','No conversions yet.'];
+if(!res){const rk=Object.keys(V).sort((x,y)=>V[y][1]/V[y][0]-V[x][1]/V[x][0]),a=rk[0],b=rk[1],[na,ca]=V[a],[nb,cb]=V[b],pa=ca/na,pb=cb/nb,pool=(ca+cb)/(na+nb),se=Math.sqrt(pool*(1-pool)*(1/na+1/nb));
+if(se===0)res=['not_enough_data','No variation to compare.'];else{const z=(pa-pb)/se,p=erfc(Math.abs(z)/Math.SQRT2);res=p<.05?['winner',`${a} converts ${(pa*100).toFixed(2)}% vs ${b} ${(pb*100).toFixed(2)}% (p=${p.toFixed(4)}).`]:['not_enough_data',`Difference not significant (p=${p.toFixed(3)}). Keep testing.`]}}
+$('#o5').innerHTML=`<p><span class="pill ${res[0]=='winner'?'ok':'warn'}">${res[0]}</span> ${esc(res[1])}</p>`};$('#g5').click();
+</script></body></html>

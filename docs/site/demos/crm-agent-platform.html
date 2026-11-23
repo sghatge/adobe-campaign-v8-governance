@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1220"><meta name="description" content="In-browser port of the CRM AI Agent Platform workbench: eight agents, evidence-first.">
+<title>CRM AI Agent Platform | Governance OS demos</title><link rel="stylesheet" href="demo.css"></head><body>
+<header class="top"><div class="wrap"><a class="brand" href="../index.html">GOVERNANCE <span>OS</span></a>
+<nav class="crumbs"><a href="../index.html#demos">← All live demos</a><a href="../portfolio.html">Project index</a><a href="https://github.com/sghatge" target="_blank" rel="noopener">GitHub</a></nav></div></header>
+<main><section class="wrap hero"><div class="eyebrow">CRM AI Agent Platform</div><h1>An evidence-first workbench for CRM operations.</h1><p class="lead">Eight task-specific agents. Campaign QA, Performance Analyst and Workload & Capacity run real deterministic checks; the rest produce a structured draft.</p><div class="banner">Prototype mode: no live CRM connection, no external AI model call, no outbound actions. Use synthetic or sanitized data only. Browser port of the repository's Streamlit app.</div></section>
+<section class="wrap section"><div class="two"><div class="card"><h3>Task intake</h3>
+<label for="ag">Agent</label><select id="ag"></select><p class="muted" id="ad"></p>
+<label for="tk">What do you need the agent to do?</label><input type="text" id="tk" placeholder="e.g. Review campaign readiness for next week's launch">
+<label for="cx">Sanitized evidence or context</label><textarea id="cx" placeholder="Campaign brief, aggregate metrics, sanitized logs, ticket notes..."></textarea>
+<div id="fm"></div><div class="row"><button class="primary" id="run">Run agent</button></div>
+<div class="banner">Operating rules: evidence before conclusions · missing evidence = not verified · human approval for production actions · never paste secrets or personal data.</div></div>
+<div class="card"><h3>Agent output</h3><div id="out" class="muted">Choose an agent, add context and run it.</div><div class="row hidden" id="dl"><button id="dlb">Download output (.md)</button></div></div></div></section></main>
+<footer><div class="wrap">Independent engineering portfolio · synthetic data only · runs entirely in your browser, nothing is sent anywhere.</div></footer>
+<script>
+const AG={"Campaign Manager":"Plan, track, and unblock campaigns.","Campaign QA":"Check campaign readiness and launch risks.","Performance Analyst":"Calculate KPIs and identify patterns.","CRM Troubleshooter":"Structure incident diagnosis and safe next steps.","Executive Reporting":"Turn evidence into leadership-ready updates.","Lifecycle & Segmentation":"Review journeys, audience logic and suppression.","Workload & Capacity":"Model demand, capacity and potential savings.","Governance & Evidence":"Audit claims, sources, privacy and approval gaps."};
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const F={"Campaign QA":[['campaign_id','Campaign ID'],['consent','Consent / opt-in evidence reference'],['audience','Audience and exclusion definition'],['proof','Proof / content reference'],['approval','Approval evidence reference'],['schedule','Planned schedule and time zone']],
+"Performance Analyst":[['sent','Sent',10000],['delivered','Delivered',9800],['opens','Opens (unique or total, say so in context)',4500],['clicks','Clicks (unique or total, say so in context)',350],['conversions','Conversions',45]],
+"Workload & Capacity":[['hours','Demand hours for period',240],['capacity','Available capacity hours',220]]};
+$('#ag').innerHTML=Object.keys(AG).map(a=>`<option>${esc(a)}</option>`).join('');
+function form(){const a=$('#ag').value;$('#ad').textContent=AG[a];const f=F[a]||[];$('#fm').innerHTML=f.length?'<label>Optional structured inputs</label>'+f.map(([k,l,v])=>`<label for="f_${k}">${l}</label><input id="f_${k}" ${v!==undefined?`type="number" min="0" value="${v}"`:'type="text"'}>`).join(''):''}
+$('#ag').onchange=form;form();
+const v=k=>($('#f_'+k)?.value||'').trim(),n=k=>+v(k)||0,fmt=x=>x.toLocaleString('en-US'),rate=(a,b)=>b>0&&a>=0?(a/b*100).toFixed(2)+'%':'Not available';
+let md='';
+function table(h,rows){return `<div class="tw"><table><thead><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
+const mdt=(h,rows)=>'| '+h.join(' | ')+' |\n|'+h.map(()=>'---').join('|')+'|\n'+rows.map(r=>'| '+r.join(' | ')+' |').join('\n');
+$('#run').onclick=()=>{const a=$('#ag').value,task=$('#tk').value.trim()||'Task not specified',ctx=$('#cx').value.trim();let h='';
+if(a=='Campaign QA'){const d=Object.fromEntries(F[a].map(([k])=>[k,v(k)])),C=[];
+const add=(nm,ok,det,sev='HIGH')=>C.push([nm,ok?'PASS':'NOT VERIFIED / REVIEW',ok?'—':sev,det]);
+add('Campaign ID supplied',!!d.campaign_id,'Provided ID: '+(d.campaign_id||'Missing'));add('Consent evidence',!!d.consent,'Evidence supplied: '+(d.consent||'No consent evidence supplied'));
+add('Audience and exclusions',!!d.audience,'Audience definition: '+(d.audience||'Missing audience definition'));add('Proof / content reviewed',!!d.proof,'Proof reference: '+(d.proof||'No proof reference supplied'),'MEDIUM');
+add('Approval evidence',!!d.approval,'Approval reference: '+(d.approval||'No approval evidence supplied'));add('Schedule supplied',!!d.schedule,'Schedule: '+(d.schedule||'Missing schedule'),'MEDIUM');
+const block=C.some(c=>c[1]!='PASS'&&c[2]=='HIGH'),vd=block?'NO-GO / INSUFFICIENT EVIDENCE':'GO WITH CONDITIONS — HUMAN REVIEW REQUIRED',note='This checklist is a preliminary evidence check, not a substitute for platform validation or authorized human approval.',hd=['Check','Status','Severity','Evidence / next step'];
+h=`<div class="big"><span class="pill ${block?'bad':'warn'}">${vd}</span></div>`+table(hd,C.map(c=>c.map(esc)))+`<p class="banner">${note}</p>`;md=`Verdict: ${vd}\n\n${mdt(hd,C)}\n\n${note}`}
+else if(a=='Performance Analyst'){const s=n('sent'),d=n('delivered'),o=n('opens'),c=n('clicks'),cv=n('conversions');
+const R=[['Delivery rate',rate(d,s),`${fmt(d)} delivered / ${fmt(s)} sent`],['Unique open rate (approx.)',rate(o,d),`${fmt(o)} opens / ${fmt(d)} delivered; confirm source definition`],['CTR (approx.)',rate(c,d),`${fmt(c)} clicks / ${fmt(d)} delivered; confirm unique vs total clicks`],['Conversion rate (approx.)',rate(cv,d),`${fmt(cv)} conversions / ${fmt(d)} delivered; attribution window not provided`]],N=[];
+if(s<=0)N.push('Sent must be greater than zero for meaningful rates.');if(d>s)N.push('Delivered exceeds sent; validate source definitions or data quality.');if(o>d)N.push('Opens exceed delivered; verify whether opens are total rather than unique.');if(c>d)N.push('Clicks exceed delivered; verify total/unique definitions.');
+if(!N.length)N.push('Rates are descriptive only. Confirm source definitions, time window, attribution and deduplication before decisions.');
+h=table(['Metric','Value','Basis'],R.map(r=>r.map(esc)))+'<ul>'+N.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>';md=mdt(['Metric','Value','Basis'],R)+'\n\n'+N.map(x=>'- '+x).join('\n')}
+else if(a=='Workload & Capacity'){const H=+v('hours')||0,Cp=+v('capacity')||0,u=Cp>0?(H/Cp*100).toFixed(1)+'%':'Not available',R=[['Demand hours',H.toFixed(1)],['Available capacity hours',Cp.toFixed(1)],['Utilization',u],['Overload hours',Math.max(0,H-Cp).toFixed(1)]];
+h=table(['Metric','Value'],R);md=mdt(['Metric','Value'],R)}
+else{md=`# ${a} — Draft Output\n\n## Request\n${task}\n\n## Evidence provided\n${ctx||'No supporting evidence supplied.'}\n\n## Initial assessment\n- **Status:** NOT VERIFIED — this prototype cannot verify external systems or evidence not included above.\n- **Recommendation:** Use the supplied context to identify the next check; attach source artifacts before making operational decisions.\n- **Human review:** Required before sending messages, changing audience rules, updating production systems, or launching campaigns.\n\n## Missing information / limitations\n- Exact source files, platform records, definitions and approval evidence may be required.\n- Any inference must be labelled as a hypothesis.\n- No external CRM or model-provider call was made by this local prototype.\n`;
+h=`<h3>${esc(a)} — Draft Output</h3><p><b>Request:</b> ${esc(task)}</p><p><b>Evidence provided:</b> ${esc(ctx||'No supporting evidence supplied.')}</p><p><span class="pill warn">NOT VERIFIED</span> This prototype cannot verify external systems or evidence not included above. Human review is required before any production action.</p><ul><li>Exact source files, platform records, definitions and approval evidence may be required.</li><li>Any inference must be labelled as a hypothesis.</li><li>No external CRM or model-provider call was made.</li></ul>`}
+$('#out').innerHTML=h;$('#out').classList.remove('muted');$('#dl').classList.remove('hidden')};
+$('#dlb').onclick=()=>{const u=URL.createObjectURL(new Blob([md],{type:'text/markdown'})),a=document.createElement('a');a.href=u;a.download='crm-agent-output.md';a.click();URL.revokeObjectURL(u)};
+</script></body></html>
