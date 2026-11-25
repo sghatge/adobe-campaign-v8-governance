@@ -147,18 +147,19 @@ h2, h3 {
 input, textarea, [data-baseweb="select"] {
   border-radius: 8px !important;
 }
-.gov-hero {
-  min-height: 285px; display:flex; align-items:center; overflow:hidden;
-  margin:0 0 22px; border:1px solid rgba(148,163,184,.22); border-radius:20px;
-  background-size:cover; background-position:center 46%;
-  box-shadow:0 18px 48px rgba(15,23,42,.16);
+.gov-image-banner {
+  width: 100%;
+  height: 220px;
+  margin: 0 0 20px;
+  border-radius: 14px;
+  background-size: cover;
+  background-position: center 48%;
+  border: 1px solid var(--gov-border);
+  box-shadow: 0 4px 18px rgba(23,35,56,.08);
 }
-.gov-hero-content {padding:34px 40px; max-width:780px;}
-.gov-hero-kicker {color:#7dd3fc;font-size:.72rem;font-weight:800;letter-spacing:.16em;margin-bottom:13px;}
-.gov-hero-title {color:#fff;font-size:clamp(2rem,4vw,3.25rem);line-height:1.05;font-weight:850;letter-spacing:-.045em;}
-.gov-hero-copy {color:#dbeafe;font-size:1rem;line-height:1.55;margin-top:13px;max-width:620px;}
-.gov-hero-foot {display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:#a5b4fc;font-size:.65rem;font-weight:750;letter-spacing:.13em;margin-top:22px;}
-@media (max-width:768px) {.gov-hero{min-height:245px;border-radius:14px;background-position:center;}.gov-hero-content{padding:24px 20px;}.gov-hero-copy{font-size:.9rem;}}
+@media (max-width:768px) {
+  .gov-image-banner { height: 145px; border-radius: 10px; }
+}
 hr {
   border-color: var(--gov-border);
   margin-top: 1.5rem;
@@ -233,33 +234,26 @@ with st.sidebar:
 
 st.title(page)
 
-# Cinematic, page-specific visual identity for every Governance OS workspace.
-_PAGE_HEROES = {
-    "Executive Overview": ("https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1800&q=85", "COMMAND INTELLIGENCE", "A single view of campaign health, governance outcomes and operational control."),
-    "Campaign QA": ("https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1800&q=85", "PRECISION QUALITY ENGINE", "Deterministic pre-flight checks, explainable findings and evidence-led decisions."),
-    "Campaign Portfolio": ("https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1800&q=85", "PORTFOLIO CONTROL ROOM", "Assess campaigns consistently and see the complete governance picture."),
-    "Risk Intelligence": ("https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1800&q=85", "RISK RADAR", "Surface control failures, risk concentration and emerging exposure."),
-    "Approval Centre": ("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1800&q=85", "HUMAN DECISION GATE", "Make accountable review decisions with clear evidence and auditability."),
-    "Audit Ledger": ("https://images.unsplash.com/photo-1510511459019-5dda7724fd87?auto=format&fit=crop&w=1800&q=85", "TRUST & TRACEABILITY", "Verify event integrity and preserve a transparent record of governance activity."),
-    "Campaign Guardian": ("https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=1800&q=85", "BOUNDED AI GUARDIAN", "Evidence-led recommendations with deterministic controls and human oversight."),
-    "Policy Registry": ("https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1800&q=85", "POLICY COMMAND", "Explore the active control framework and the rules behind every decision."),
+# Image-only page banners. Keep the existing application palette and components unchanged.
+_PAGE_IMAGES = {
+    "Executive Overview": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1800&q=85",
+    "Campaign QA": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1800&q=85",
+    "Campaign Portfolio": "https://images.unsplash.com/photo-1460925895917-afdae827c52f?auto=format&fit=crop&w=1800&q=85",
+    "Risk Intelligence": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1800&q=85",
+    "Approval Centre": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1800&q=85",
+    "Audit Ledger": "https://images.unsplash.com/photo-1510511459019-5dda7724fd87?auto=format&fit=crop&w=1800&q=85",
+    "Campaign Guardian": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=1800&q=85",
+    "Policy Registry": "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1800&q=85",
 }
-_hero_image, _hero_kicker, _hero_copy = _PAGE_HEROES[page]
 st.markdown(
     f"""
-    <section class="gov-hero" style="background-image:
-      linear-gradient(90deg, rgba(7,16,32,.94) 0%, rgba(7,16,32,.76) 48%, rgba(7,16,32,.18) 100%),
-      url('{_hero_image}');">
-      <div class="gov-hero-content">
-        <div class="gov-hero-kicker">🛡️ GOVERNANCE OS / {_hero_kicker}</div>
-        <div class="gov-hero-title">{page}</div>
-        <div class="gov-hero-copy">{_hero_copy}</div>
-        <div class="gov-hero-foot"><span>ENTERPRISE CONTROL PLANE</span><span>•</span><span>SYNTHETIC DEMO ENVIRONMENT</span></div>
-      </div>
-    </section>
+    <div class="gov-image-banner" role="img" aria-label="{page}"
+      style="background-image: linear-gradient(rgba(16,26,43,.28), rgba(16,26,43,.28)),
+      url('{_PAGE_IMAGES[page]}');"></div>
     """,
     unsafe_allow_html=True,
 )
+
 st.markdown(
     '<div class="gov-banner">Independent governance demonstration. '
     'Synthetic data only. No production connection or campaign execution.</div>',
